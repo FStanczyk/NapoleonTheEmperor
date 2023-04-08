@@ -1,0 +1,87 @@
+import pyglet as pg
+from pyglet import window, app, clock
+from states.boot_up import BOOT_UP
+from states.level_explorer import LEVEL_EXPLORER
+from states.game import GAME
+import const
+
+window = const.window
+
+@window.event
+def on_draw():
+    window.clear()
+    if const.state == "boot_up":
+        BOOT_UP.draw()
+    if const.state == "level_explorer":
+        LEVEL_EXPLORER.draw()
+    if const.state == "game":
+        GAME.draw()
+
+
+
+@window.event
+def update(dt):
+    if const.state == "boot_up":
+        BOOT_UP.passive_update(dt)
+    if const.state == "level_explorer":
+        LEVEL_EXPLORER.passive_update(dt)
+    if const.state == "game":
+        GAME.passive_update(dt)
+
+clock.schedule_interval(update, 1 / const.FPS)
+
+
+@window.event
+def slow_update(dt):
+    if const.LOADING:
+        return
+
+
+@window.event
+def on_mouse_press(mouse_x, mouse_y, button, modifiers):
+    if const.LOADING:
+        return
+    if const.state == "boot_up":
+        BOOT_UP.press_update(mouse_x, mouse_y)
+    if const.state == "level_explorer":
+        LEVEL_EXPLORER.press_update(mouse_x, mouse_y)
+    if const.state == "game":
+        GAME.press_update(mouse_x, mouse_y)
+
+
+@window.event
+def on_mouse_release(mouse_x, mouse_y, button, modifiers):
+    if const.LOADING:
+        return
+    if const.state == "boot_up":
+        BOOT_UP.release_update(mouse_x, mouse_y)
+    if const.state == "level_explorer":
+        LEVEL_EXPLORER.release_update(mouse_x, mouse_y)
+    if const.state == "game":
+        GAME.release_update(mouse_x, mouse_y, button)
+
+
+@window.event
+def on_mouse_motion(mouse_x, mouse_y, dx, dy):
+    if const.LOADING:
+        return
+    if const.state == "boot_up":
+        BOOT_UP.motion_update(mouse_x, mouse_y)
+    if const.state == "level_explorer":
+        LEVEL_EXPLORER.motion_update(mouse_x, mouse_y)
+    if const.state == "game":
+        GAME.motion_update(mouse_x, mouse_y)
+
+
+@window.event
+def on_text(text):
+    if const.LOADING:
+        return
+
+
+@window.event
+def on_key_press(symbol, modifiers):
+    if const.LOADING:
+        return
+
+app.run()
