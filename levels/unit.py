@@ -32,12 +32,12 @@ class Unit():
         self.hp = 10
         self.x = 0
         self.y = 0
-        self.sprite = pyglet.sprite.Sprite(self.blit, x=self.x, y=self.y, batch=batch, group=group)
+        self.sprite = pyglet.sprite.Sprite(self.blit, x=self.x, y=self.y) #, batch=batch, group=group)
         self.banner = hp_board_player if self.owner == 0 else hp_board_enemy
         self.banner_blit = self.banner.get_texture()
         self.banner_blit.width = w
         self.banner_blit.height = h
-        self.banner_sprite = pyglet.sprite.Sprite(self.banner_blit, x=self.x, y=self.y, batch=batch, group=group)
+        self.banner_sprite = pyglet.sprite.Sprite(self.banner_blit, x=self.x, y=self.y)#, batch=batch, group=group)
 
         self.selected_cords_text = text.Label(str(self.hp),
                                               font_name=FONT,
@@ -45,13 +45,14 @@ class Unit():
                                               x=self.x + w/2, y=self.y + h/2 - (h/4 + 3),
                                               anchor_x='center',
                                               anchor_y='center',
-                                              color=(0,0,0,255),
-                                              batch=batch,
-                                              group=group
-                                              )
-
-    # def draw(self):
-    #     self.sprite.draw()
+                                              color=(0,0,0,255))#,
+                                             # batch=batch,
+                                             # group=group
+                                             # )
+    def draw(self):
+        self.sprite.draw()
+        self.banner_sprite.draw()
+        self.selected_cords_text.draw()
 
     def endTurn(self):
         self.moved = False

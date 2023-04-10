@@ -2,15 +2,17 @@
     <introText>
         This is the tutorial!
     </introText>
+    <objectives>
+        <objective type="occupy" row="8" col="7" for_turns="2"/>
+    </objectives>
     <hexes><!-- Here we will shape a map, terrains, road etc. -->
         <Hex row="3" col="4" terrainType="1" flag="0" name="Deep forest" isRoad="False"/>
         <Hex row="3" col="3" terrainType="1" flag="0" name="Deep forest1" isRoad="False"/>
+        <Hex row="8" col="7" terrainType="2" flag="graphics/flags/flag_italy.png" name="Main base" isRoad="False"/>
     </hexes>
     <units> <!-- Here we will define all starting units and their positions -->
         <Unit id="0" player="0" row="6" col="4"/>
         <Unit id="0" player="0" row="10" col="6"/>
         <Unit id="1" player="1" row="9" col="7"/>
     </units>
-
-
 </scenario>

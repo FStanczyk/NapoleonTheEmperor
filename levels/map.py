@@ -4,9 +4,8 @@ from const import \
     MOVE_MARGIN, MOVE_VELOCITY, \
     SCREEN_HEIGHT, SCREEN_WIDTH, \
     GUI_TOP, GUI_LEFT, GUI_RIGHT, GUI_BOTTOM
-from levels.hex import Hex
+from levels.hex import Hex, Flag
 from pyglet.window import mouse
-
 W_LEFT_MOVE = MOVE_MARGIN
 W_RIGHT_MOVE = GUI_RIGHT - MOVE_MARGIN
 H_TOP_MOVE = GUI_TOP - MOVE_MARGIN
@@ -33,6 +32,8 @@ class Map():
                 hex_key = f"{r},{c}"
                 self.hexMap[hex_key] = Hex(r, c, self.batch, self.group)
 
+        self.objectives = []
+
         self.overEdge = set()
         self.selectedHex = None
 
@@ -42,6 +43,9 @@ class Map():
 
     def draw(self):
         self.batch.draw()
+        for hex in self.hexMap.values():
+            if hex.isVisible is True:
+                hex.drawUnit()
 
     def moveMap(self, dir):
         if dir == 'top':
@@ -83,7 +87,6 @@ class Map():
         pass
 
     def release_update(self, mouse_x, mouse_y, button):
-
         alreadyHeld = self.selectedHex
 
         if button & mouse.LEFT:
@@ -152,9 +155,11 @@ class Map():
     def setHex(self, row, col, terrainType, flag, isRoad, name):
         hex_key = f"{row},{col}"
         self.hexMap[hex_key].terrainType = terrainType
-        self.hexMap[hex_key].flag = flag
         self.hexMap[hex_key].isRoad = isRoad
         self.hexMap[hex_key].name = name
+        if flag is not "0":
+            f = Flag(self.batch, self.group, flag)
+            self.hexMap[hex_key].flag = f
 
     def placeUnit(self, row, col, unit):
         hex_key = f"{row},{col}"
@@ -163,6 +168,7 @@ class Map():
     def placeOutUnit(self, row, col):
         hex_key = f"{row},{col}"
         self.hexMap[hex_key].unit = None
+
 
     def showSpottedHexes(self):
         if  self.selectedHex is None or self.selectedHex.unit is None or self.selectedHex.unit.owner != 0:

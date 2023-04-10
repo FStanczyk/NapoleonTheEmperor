@@ -2,6 +2,10 @@ from levels.map import MAPS
 from levels.unit import Unit
 import xml.etree.ElementTree as ET
 import pyglet
+from pyglet import image
+scale = 1.8
+w = 64* scale
+h = (64 - 6)* scale
 from const import TERRAINS
 class Level():
 
@@ -19,6 +23,7 @@ class Level():
         data = tree.getroot()
         hexes = data.find('hexes')
         units_map = data.find('units')
+        objectives = data.find('objectives')
         for hex in hexes.findall('Hex'):
             row = hex.get('row')
             col = hex.get('col')
@@ -26,6 +31,7 @@ class Level():
             flag = hex.get('flag')
             isRoad = hex.get('isRoad')
             name = hex.get('name')
+
             self.map.setHex(row, col, terrainType, flag, isRoad, name)
 
         for unit in units_map.findall('Unit'):
@@ -47,7 +53,14 @@ class Level():
             col = unit.get('col')
             self.map.placeUnit(row, col, U)
 
-
+        for objective in objectives:
+            obj = {
+                "type": objective.get('type'),
+                "row": int(objective.get('row')),
+                "col": int(objective.get('col')),
+                "for_turns": int(objective.get('for_turns'))
+            }
+            self.map.objectives.append(obj)
 
 LEVELS = {
     "Tutorial" :Level('Tutorial', MAPS["Tutorial"], "scenarios/tutorial.xml")

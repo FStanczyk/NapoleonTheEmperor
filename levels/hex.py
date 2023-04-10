@@ -42,6 +42,10 @@ class Hex():
         self.sprite = pyglet.sprite.Sprite(self.active, x=self.x, y=self.y, batch=batch, group=group)
 
 
+    def drawUnit(self):
+        if self.unit is not None:
+            self.unit.draw()
+
     def release_update(self, mouse_x, mouse_y):
         if not self.isVisible:
             self.active = self.states[3]
@@ -76,9 +80,10 @@ class Hex():
 
         self.sprite.x = self.x
         self.sprite.y = self.y
-        if self.unit != None:
+        if self.flag is not None:
+            self.flag.move(self.x, self.y)
+        if self.unit is not None:
             self.unit.move(self.x, self.y)
-
 
     def center(self):
         return [self.x + w/2, self.y + h/2]
@@ -95,3 +100,22 @@ class Hex():
 
     def moveOutUnit(self):
         self.unit = None
+
+
+class Flag:
+    def __init__(self, batch, group, texture_path):
+        self.texture = image.load(texture_path)
+        print(texture_path)
+        self.blit = self.texture.get_texture()
+        self.blit.width = w
+        self.blit.height = h
+        self.x = 220
+        self.y = 220
+        self.sprite = pyglet.sprite.Sprite(self.blit, x=self.x, y=self.y, batch=batch, group=group)
+
+    def move(self, x, y):
+        print(self.x)
+        self.x = x
+        self.y = y
+        self.sprite.x = x
+        self.sprite.y = y

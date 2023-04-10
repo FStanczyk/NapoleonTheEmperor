@@ -5,7 +5,6 @@ import pyglet
 from levels.abstract_level import LEVELS
 from const import SCREEN_WIDTH, SCREEN_HEIGHT, FONT, switch_state, level, GUI_TOP_HEIGHT, GUI_RIGHT, GUI_RIGHT_WIDTH
 from pyglet.window import mouse
-import time
 
 gui =  image.load('graphics/maps/gui_bg.png')
 info_top_y = SCREEN_HEIGHT - GUI_TOP_HEIGHT/2
@@ -94,6 +93,7 @@ class Game:
         for _button in self.Buttons:
             _button.update_release(mouse_x, mouse_y)
 
+
     def draw(self):
         if self.turnStarted:
             self.level.map.draw()
@@ -109,8 +109,6 @@ class Game:
             self.end_turn_text.draw()
             self.batch.draw()
             clock.schedule_once(self.setTurnReady, 3)
-
-
 
     def startTurn(self):
         self.playerTurn = 0
