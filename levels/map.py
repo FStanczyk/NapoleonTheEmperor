@@ -1,11 +1,13 @@
 import pyglet
+from pyglet.window import mouse
 from const import \
     MOVEABLE_WINDOW_W, MOVEABLE_WINDOW_H, \
     MOVE_MARGIN, MOVE_VELOCITY, \
     SCREEN_HEIGHT, SCREEN_WIDTH, \
     GUI_TOP, GUI_LEFT, GUI_RIGHT, GUI_BOTTOM
 from levels.hex import Hex, Flag
-from pyglet.window import mouse
+
+
 W_LEFT_MOVE = MOVE_MARGIN
 W_RIGHT_MOVE = GUI_RIGHT - MOVE_MARGIN
 H_TOP_MOVE = GUI_TOP - MOVE_MARGIN
@@ -23,7 +25,7 @@ class Map():
         self.group = pyglet.graphics.Group()
         self.map = pyglet.sprite.Sprite(image, batch=self.batch)
         self.hexMap = {}
-
+        self.players = []
         rowsNeeded = int(image.height/ (64* 1.5)) + 1
         colsNeeded = int(image.width/64 * 0.75) + 2
         print(colsNeeded)
@@ -72,6 +74,11 @@ class Map():
         else:
             self.moveMap('none')
 
+    def flickerUpdate(self, dt):
+        for hex in self.hexMap.values():
+            if hex.flag is not None:
+                hex.flag.ligthSwitch()
+
     def motion_update(self, mouse_x, mouse_y):
         self.overEdge = set()
         if mouse_x > W_RIGHT_MOVE and mouse_x < GUI_RIGHT:
@@ -104,21 +111,28 @@ class Map():
                 self.action__move = True
                 self.heldUnit = self.selectedHex.unit
 
-            if alreadyHeld and alreadyHeld.unit is not None: #If unit was already selected
+            if alreadyHeld and alreadyHeld.unit is not None and alreadyHeld.unit.owner == 0: #If unit was already selected
                 #Moving
                 if self.selectedHex.unit is None:
                     self.moveUnit(alreadyHeld, self.selectedHex)
-                #attacking
-                if self.selectedHex.unit is not None and self.selectedHex.unit.owner != 0:
-                        damage = alreadyHeld.unit.attack()
-                        self.selectedHex.unit.hit(damage)
-                        if self.selectedHex.unit.destroyed is True:
-                            self.destroyUnit(self.selectedHex)
+
+                # actions for neighbour hexes
+                neighbour_hexes = self.calculateNeighbours(alreadyHeld.row, alreadyHeld.col)
+                if (self.selectedHex.row, self.selectedHex.col) in neighbour_hexes:
+                    # attacking
+                    if self.selectedHex.unit is not None and self.selectedHex.unit.owner != 0:
+                            damage = alreadyHeld.unit.attack()
+                            self.selectedHex.unit.hit(damage)
+                            if self.selectedHex.unit.destroyed is True:
+                                self.destroyUnit(self.selectedHex)
 
         self.unspotAllHexes()
         self.showSpottedHexes()
         self.refreshTurnHexSprites()
 
+    def selectHex(self, hex):
+        self.selectedHex = hex
+        hex.select()
 
     def calcSelectedHex(self, mouse_x, mouse_y):
         selected = []
@@ -134,10 +148,10 @@ class Map():
             distance2 = ((mouse_x - center2[0]) ** 2 + (mouse_y - center2[1]) ** 2) ** 0.5
             if distance1 < distance2:
                 hex2.deselect()
-                self.selectedHex = hex1
+                self.selectHex(hex1)
             else:
                 hex1.deselect()
-                self.selectedHex = hex2
+                self.selectHex(hex2)
         elif len(selected) == 1:
             self.selectedHex = selected[0]
         elif len(selected) == 0 and self.selectedHex is not None:
@@ -157,7 +171,7 @@ class Map():
         self.hexMap[hex_key].terrainType = terrainType
         self.hexMap[hex_key].isRoad = isRoad
         self.hexMap[hex_key].name = name
-        if flag is not "0":
+        if flag != "0":
             f = Flag(self.batch, self.group, flag)
             self.hexMap[hex_key].flag = f
 
@@ -232,6 +246,16 @@ class Map():
     def destroyUnit(self, hex):
         hex.unit = None
 
+    def selectNextNotMovedUnit(self):
+        for unit in self.players[0].units:
+            if unit.moved is False:
+                key = f"{unit.row},{unit.col}"
+                hex = self.hexMap[key]
+                self.selectHex(hex)
+                break
+        self.unspotAllHexes()
+        self.showSpottedHexes()
+        self.refreshTurnHexSprites()
 
 MAPS = {
     "Tutorial": Map('graphics/maps/tutorial_map.jpg')

@@ -4,7 +4,6 @@ from states.boot_up import BOOT_UP
 from states.level_explorer import LEVEL_EXPLORER
 from states.game import GAME
 import const
-
 window = const.window
 
 @window.event
@@ -20,22 +19,25 @@ def on_draw():
 
 
 @window.event
-def update(dt):
+def update():
     if const.state == "boot_up":
-        BOOT_UP.passive_update(dt)
+        BOOT_UP.passive_update()
     if const.state == "level_explorer":
-        LEVEL_EXPLORER.passive_update(dt)
+        LEVEL_EXPLORER.passive_update()
     if const.state == "game":
-        GAME.passive_update(dt)
+        GAME.passive_update()
+        GAME.flicker_update()
 
-clock.schedule_interval(update, 1 / const.FPS)
+clock.schedule_interval(GAME.flicker_update, 1 / 2)
+clock.schedule_interval(BOOT_UP.passive_update, 1 / const.FPS)
+clock.schedule_interval(LEVEL_EXPLORER.passive_update, 1 / const.FPS)
+clock.schedule_interval(GAME.passive_update, 1 / const.FPS)
 
 
-@window.event
-def slow_update(dt):
-    if const.LOADING:
-        return
-
+#
+# @window.event
+# def slow_update(dt):
+#     if const.state == "game":
 
 @window.event
 def on_mouse_press(mouse_x, mouse_y, button, modifiers):

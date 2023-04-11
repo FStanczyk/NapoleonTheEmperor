@@ -32,6 +32,8 @@ class Unit():
         self.hp = 10
         self.x = 0
         self.y = 0
+        self.row = 0
+        self.col = 0
         self.sprite = pyglet.sprite.Sprite(self.blit, x=self.x, y=self.y) #, batch=batch, group=group)
         self.banner = hp_board_player if self.owner == 0 else hp_board_enemy
         self.banner_blit = self.banner.get_texture()

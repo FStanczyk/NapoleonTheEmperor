@@ -1,5 +1,6 @@
 from levels.map import MAPS
 from levels.unit import Unit
+from levels.player import Player
 import xml.etree.ElementTree as ET
 import pyglet
 from pyglet import image
@@ -15,6 +16,11 @@ class Level():
         self.file = file
         self.batch = self.map.batch
         self.group = self.map.group
+        self.players = [
+            Player(False), # not AI (player)
+            Player(True), # AI
+        ]
+        self.map.players = self.players
 
     def initLevel(self):
         tree = ET.parse(self.file)
@@ -44,13 +50,20 @@ class Level():
             U.name = sample.get('name')
             U.nation = sample.get('nation')
             U.type = sample.get('type')
+            U.experience = int(unit.get('experience'))
             U.baseMoveRange = int(sample.get('moveRange'))
             U.strength = int(sample.get('strength'))
             U.unit_id = int(id)
             U.owner = int(unit.get('player'))
-
+            U.row = int(unit.get('row'))
+            U.col = int(unit.get('col'))
             row = unit.get('row')
             col = unit.get('col')
+
+            if U.owner == 0:
+                self.map.players[0].units.append(U)
+            elif U.owner == 1:
+                self.map.players[1].units.append(U)
             self.map.placeUnit(row, col, U)
 
         for objective in objectives:

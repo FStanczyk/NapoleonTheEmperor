@@ -1,11 +1,11 @@
 from pyglet import graphics, image
 from pyglet.gl import *
 glEnable(GL_BLEND)
-glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+
 from const import MOVE_VELOCITY, TERRAINS
 scale = 1.8
-w = 64* scale
-h = (64 - 6)* scale
+w = 64 * scale
+h = (64 - 9)* scale
 
 texture = image.load('graphics/maps/hex.png')
 blit = texture.get_texture()
@@ -41,10 +41,10 @@ class Hex():
         self.active = self.states[3]
         self.sprite = pyglet.sprite.Sprite(self.active, x=self.x, y=self.y, batch=batch, group=group)
 
-
     def drawUnit(self):
         if self.unit is not None:
             self.unit.draw()
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 
     def release_update(self, mouse_x, mouse_y):
         if not self.isVisible:
@@ -52,11 +52,9 @@ class Hex():
         elif not self.isMovable:
             self.active = self.states[2]
         elif self.x <= mouse_x <= self.x + w and self.y <= mouse_y <= self.y + h:
-            self.active = self.states[1]
-            self.selected = True
+            self.select()
         else:
-            self.active = self.states[0]
-            self.selected = False
+            self.deselect()
 
         self.sprite.image = self.active
 
@@ -66,8 +64,7 @@ class Hex():
         elif not self.isMovable:
             self.active = self.states[2]
         else:
-            self.active = self.states[0]
-            self.selected = False
+            self.deselect()
 
         self.sprite.image = self.active
 
@@ -93,10 +90,17 @@ class Hex():
         self.active = self.states[0]
         self.sprite.image = self.active
 
+    def select(self):
+        self.selected = True
+        self.active = self.states[1]
+        self.sprite.image = self.active
+
     def placeUnit(self, unit):
         self.unit = unit
         self.unit.x = self.x
         self.unit.y = self.y
+        self.unit.row = self.row
+        self.unit.col = self.col
 
     def moveOutUnit(self):
         self.unit = None
@@ -105,17 +109,27 @@ class Hex():
 class Flag:
     def __init__(self, batch, group, texture_path):
         self.texture = image.load(texture_path)
-        print(texture_path)
         self.blit = self.texture.get_texture()
-        self.blit.width = w
-        self.blit.height = h
-        self.x = 220
-        self.y = 220
-        self.sprite = pyglet.sprite.Sprite(self.blit, x=self.x, y=self.y, batch=batch, group=group)
+        self.blit.width *= scale
+        self.blit.height *= scale
+        self.x = 0
+        self.y = 0
+        self.states = [
+            self.blit.get_region(0, 0, w, h),
+            self.blit.get_region(w, 0, w, h),  # border light
+        ]
+        self.active = self.states[0]
+        self.sprite = pyglet.sprite.Sprite(self.active, x=self.x, y=self.y, batch=batch, group=group)
 
     def move(self, x, y):
-        print(self.x)
         self.x = x
         self.y = y
         self.sprite.x = x
         self.sprite.y = y
+
+    def ligthSwitch(self):
+        if self.active is self.states[0]:
+            self.active = self.states[1]
+        else:
+            self.active = self.states[0]
+        self.sprite.image = self.active

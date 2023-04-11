@@ -12,7 +12,7 @@ GUI_BOTTOM = 46
 GUI_LEFT = 29
 GUI_RIGHT_WIDTH = 134
 GUI_RIGHT = SCREEN_WIDTH - GUI_RIGHT_WIDTH
-
+YELLOW = (200, 142, 49, 255)
 FONT = 'VCR osd mono'
 STATES = ["boot_up",
           "level_explorer",
@@ -35,7 +35,6 @@ TERRAINS = {
     8: "desert",
     9: "swamp"
 }
-
 
 LOADING = False
 state = STATES[0]
