@@ -19,14 +19,20 @@ class Unit():
         self.attacked = False
         self.nation = None
         self.destroyed = False
+        self.upgraded = False
         self.name = None
         self.type = None
         self.tempSpotted = False
-        self.texture =  image.load(texture)
+        self.price = 0
+        self.batch = batch
+        self.group = group
+        self.img = texture
+        self.texture =  image.load(self.img)
         self.blit =  self.texture.get_texture()
         self.blit.width = w
         self.blit.height = h
         self.baseMoveRange = 0
+        self.baseSpotRange = 0
         self.strength = 0
         self.experience = 0
         self.hp = 10
@@ -59,6 +65,7 @@ class Unit():
     def endTurn(self):
         self.moved = False
         self.attacked = False
+        self.upgraded = False
         self.tempSpotted = False
 
     def attack(self):
@@ -84,6 +91,33 @@ class Unit():
         self.selected_cords_text.x = self.x + w/2
         self.selected_cords_text.y = self.y + h/2 - (h/4 + 3)
 
-    def upgradeExperience(self, amount):
-        self.experience += amount
+    def upgrade(self, expamount, hpamount):
+        if not self.upgraded and not self.moved and not self.attacked:
+            self.experience += expamount
+            if self.experience > 10: self.experience = 10
+            self.hp += hpamount
+            self.selected_cords_text.text = str(self.hp)
+            if self.hp > 18: self.hp = 18
+            self.upgraded = True
+            self.moved = True
+            self.attacked = True
 
+    def copy(self):
+        # create a new instance of the class
+        new_unit = Unit(self.batch, self.group, self.img)
+
+        # copy all attributes from the original instance to the new instance
+        new_unit.__dict__.update(self.__dict__)
+
+        # create new sprite and label objects for the new instance
+        new_unit.sprite = pyglet.sprite.Sprite(new_unit.blit, x=new_unit.x, y=new_unit.y)
+        new_unit.banner_sprite = pyglet.sprite.Sprite(new_unit.banner_blit, x=new_unit.x, y=new_unit.y)
+        new_unit.selected_cords_text = text.Label(str(new_unit.hp),
+                                                  font_name=FONT,
+                                                  font_size=12,
+                                                  x=new_unit.x + w / 2, y=new_unit.y + h / 2 - (h / 4 + 3),
+                                                  anchor_x='center',
+                                                  anchor_y='center',
+                                                  color=(0, 0, 0, 255))
+
+        return new_unit

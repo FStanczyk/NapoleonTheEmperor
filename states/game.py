@@ -3,14 +3,14 @@ from button import Button
 from pyglet import image, sprite, text, shapes, clock
 import pyglet
 from levels.abstract_level import LEVELS
-from const import SCREEN_WIDTH, SCREEN_HEIGHT, FONT, YELLOW, level, GUI_TOP_HEIGHT, GUI_RIGHT, GUI_RIGHT_WIDTH
+from const import SCREEN_WIDTH, SCREEN_HEIGHT, FONT, YELLOW, level, GUI_TOP_HEIGHT, GUI_RIGHT, GUI_RIGHT_WIDTH, switch_state
 from pyglet.window import mouse
 
 gui =  image.load('graphics/maps/gui_bg.png')
 exp_medal = image.load('graphics/misc/experience.png')
 coin = image.load('graphics/misc/coin.png')
 info_top_y = SCREEN_HEIGHT - GUI_TOP_HEIGHT/2.5
-terrain_x = SCREEN_WIDTH / 9
+terrain_x = SCREEN_WIDTH / 15
 coin_wh = 40
 coin_x = SCREEN_WIDTH - SCREEN_WIDTH/3
 coin_y = 3
@@ -33,6 +33,8 @@ gui_button_width = 80
 gui_button_height = 40
 gui_button_start_y = SCREEN_HEIGHT - 180
 gui_button_gap = gui_button_height + 8
+
+
 class Game:
 
     def __init__(self):
@@ -48,6 +50,7 @@ class Game:
         self.exp_set = [0,0,0,0,0]
         self.batch = pyglet.graphics.Batch()
         self.isUnitSelected = False
+        self.unitSelected = None
         self.unit_exp_set = [
             pyglet.sprite.Sprite(exp_states[self.exp_set[0]], x=exp_x, y=exp_y),
             pyglet.sprite.Sprite(exp_states[self.exp_set[1]], x=exp_x + exp_gap, y=exp_y),
@@ -71,6 +74,14 @@ class Game:
                                     anchor_y='center',
                                     color = YELLOW
                                     )
+        self.selected_roughness = text.Label(' ',
+                                              font_name=FONT,
+                                              font_size=14,
+                                              x=terrain_x + 150, y=info_top_y + 5,
+                                              anchor_x='center',
+                                              anchor_y='center',
+                                              color=YELLOW
+                                              )
         self.end_turn_text = text.Label(' ',
                               font_name=FONT,
                               font_size=36,
@@ -99,7 +110,8 @@ class Game:
         rectangle = shapes.Rectangle(SCREEN_WIDTH, 0, 0, SCREEN_HEIGHT, color=(0, 0, 0), batch=self.batch)
 
         self.Buttons = [
-            Button('graphics/misc/gui_button.jpg', buttons_x - gui_button_width/2,gui_button_start_y, gui_button_width, gui_button_height,
+            Button('graphics/misc/gui_button.jpg', buttons_x - gui_button_width / 2, gui_button_start_y,
+                   gui_button_width, gui_button_height,
                    resize=0,
                    text='END', fontsize=16, fontname=FONT,
                    onClick=lambda: self.endMove(),
@@ -110,6 +122,21 @@ class Game:
                    text='', fontsize=16, fontname=FONT,
                    startX = gui_button_width,
                    onClick=lambda: self.level.map.selectNextNotMovedUnit(),
+                   ),  # 128/32 one sprite resolution
+            Button('graphics/misc/gui_button.jpg', buttons_x - gui_button_width / 2, gui_button_start_y - 2*gui_button_gap,
+                   gui_button_width, gui_button_height,
+                   resize=0,
+                   text='', fontsize=16, fontname=FONT,
+                   startX=gui_button_width * 2,
+                   onClick=lambda: switch_state(4),
+                   ),  # 128/32 one sprite resolution
+            Button('graphics/misc/gui_button.jpg', buttons_x - gui_button_width / 2,
+                   gui_button_start_y - 3 * gui_button_gap,
+                   gui_button_width, gui_button_height,
+                   resize=0,
+                   text='', fontsize=16, fontname=FONT,
+                   startX=gui_button_width * 3,
+                   onClick=lambda: self.upgradeUnit(),
                    ),  # 128/32 one sprite resolution
         ]
 
@@ -138,15 +165,19 @@ class Game:
 
     def release_update(self, mouse_x, mouse_y, button):
         self.exp_set = [0, 0, 0, 0, 0]
-        self.isUnitSelected = False
+
         if self.playerTurn == 0:
             self.level.map.release_update(mouse_x, mouse_y, button)
+        for _button in self.Buttons:
+            _button.update_release(mouse_x, mouse_y)
+        self.deselectUnit()
         if button & mouse.LEFT:
             if self.level.map.selectedHex: # allow only when some hex is selected
                 self.selected_terrain_text.text = self.level.map.selectedHex.terrainType.upper()
+                self.selected_roughness.text = f"Roughness: {self.level.map.selectedHex.terrainRoughness}"
                 self.selected_cords_text.text = f"{self.level.map.selectedHex.row}, {self.level.map.selectedHex.col}"
                 if self.level.map.selectedHex.unit is not None:
-                    self.isUnitSelected = True
+                    self.selectUnit()
                     experience = self.level.map.selectedHex.unit.experience
                     name = self.level.map.selectedHex.unit.name
                     type = self.level.map.selectedHex.unit.type
@@ -155,13 +186,10 @@ class Game:
                     set = self.calculateExpSprites(experience)
                     self.exp_set = set
 
-
         elif button & mouse.RIGHT:
             self.selected_terrain_text.text = ''
             self.selected_cords_text.text = ''
 
-        for _button in self.Buttons:
-            _button.update_release(mouse_x, mouse_y)
 
         self.unit_exp_set = [
             pyglet.sprite.Sprite(exp_states[self.exp_set[0]], x=exp_x, y=exp_y),
@@ -171,13 +199,13 @@ class Game:
             pyglet.sprite.Sprite(exp_states[self.exp_set[4]], x=exp_x + 4 * exp_gap, y=exp_y),
         ]
 
-
     def draw(self):
         if self.turnStarted:
             self.level.map.draw()
             self.gui.draw()
             self.selected_terrain_text.draw()
             self.selected_cords_text.draw()
+            self.selected_roughness.draw()
             for _button in self.Buttons:
                 _button.draw()
             if self.isUnitSelected is True:
@@ -207,11 +235,14 @@ class Game:
         self.level.map.unspotAllHexes()
         self.turn += 1
         self.level.map.endTurn()
+        self.checkOccupiedCities()
         self.turnStarted = False
 
     def endMove(self):
         self.turnReady = False
         self.playerTurn = 1
+
+        # toDo - Ai actions
         self.endTurn()
 
     def setTurnReady(self, dt):
@@ -231,5 +262,37 @@ class Game:
             it += 1
         return set
 
+    def upgradeUnit(self):
+        expAmount = 2
+        hpAmount = 2
+        if self.isUnitSelected is True and self.unitSelected.owner == 0:
+            self.unitSelected.upgrade(expAmount, hpAmount)
+
+    def selectUnit(self):
+        self.isUnitSelected = True
+        self.unitSelected = self.level.map.selectedHex.unit
+
+    def deselectUnit(self):
+        self.isUnitSelected = False
+        self.unitSelected = None
+
+    def checkOccupiedCities(self):
+        playerCities = set()
+        aiCities = set()
+        for cords in self.level.map.players[0].cities:
+            key = f"{cords[0]},{cords[1]}"
+            if self.level.map.hexMap[key].flag.owner == 0:
+                playerCities.add(cords)
+            elif self.level.map.hexMap[key].flag.owner == 1:
+                aiCities.add(cords)
+        for cords in self.level.map.players[1].cities:
+            key = f"{cords[0]},{cords[1]}"
+            if self.level.map.hexMap[key].flag.owner == 0:
+                playerCities.add(cords)
+            elif self.level.map.hexMap[key].flag.owner == 1:
+                aiCities.add(cords)
+
+        self.level.map.players[0].cities = playerCities
+        self.level.map.players[1].cities = aiCities
 
 GAME = Game()

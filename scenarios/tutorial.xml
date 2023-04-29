@@ -5,10 +5,22 @@
     <objectives>
         <objective type="occupy" row="8" col="7" for_turns="2"/>
     </objectives>
+    <startBalance>300</startBalance>
+    <shop>
+         <Unit id="0" experience="2" price="100"/>
+         <Unit id="0" experience="2" price="100"/>
+         <Unit id="0" experience="2" price="100"/>
+         <Unit id="0" experience="2" price="100"/>
+         <Unit id="0" experience="2" price="100"/>
+         <Unit id="0" experience="2" price="100"/>
+         <Unit id="0" experience="2" price="100"/>
+         <Unit id="0" experience="2" price="100"/>
+         <Unit id="0" experience="2" price="100"/>
+    </shop>
     <hexes><!-- Here we will shape a map, terrains, road etc. -->
-        <Hex row="3" col="4" terrainType="1" flag="0" name="Deep forest" isRoad="False"/>
-        <Hex row="3" col="3" terrainType="1" flag="0" name="Deep forest1" isRoad="False"/>
-        <Hex row="8" col="7" terrainType="2" flag="graphics/flags/flag_italy.png" name="Main base" isRoad="False"/>
+        <Hex row="3" col="4" terrainType="0" initialFlag="0" name="Deep forest" isRoad="False"/>
+        <Hex row="3" col="3" terrainType="1" initialFlag="0" name="Deep forest1" isRoad="False"/>
+        <Hex row="8" col="7" terrainType="0" initialFlag="graphics/flags/flag_italy.png" switchedFlag="graphics/flags/flag_france.png" name="Main base" initialOwner="1" isRoad="False"/>
     </hexes>
     <units> <!-- Here we will define all starting units and their positions -->
         <Unit id="0" player="0" row="6" col="4" experience="7"/>

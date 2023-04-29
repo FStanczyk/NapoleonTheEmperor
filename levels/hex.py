@@ -2,7 +2,7 @@ from pyglet import graphics, image
 from pyglet.gl import *
 glEnable(GL_BLEND)
 
-from const import MOVE_VELOCITY, TERRAINS
+from const import MOVE_VELOCITY, TERRAINS, TERRAINS_ROUGHNESS
 scale = 1.8
 w = 64 * scale
 h = (64 - 9)* scale
@@ -16,6 +16,7 @@ class Hex():
     def __init__(self, row, col, batch, group):
         self.unit = None
         self.terrainType = TERRAINS[0] # standard is "field"
+        self.terrainRoughness = TERRAINS_ROUGHNESS[0]
         self.isRoad = False
         self.flag = None
         self.name = None
@@ -25,6 +26,7 @@ class Hex():
         self.isVisible = False
         self.selected = False
         self.onOccupation = None
+        self.lastOccupant = -1
         self.row = row
         self.col = col
         self.x = col * (3*w/4) - w
@@ -90,6 +92,7 @@ class Hex():
         self.active = self.states[0]
         self.sprite.image = self.active
 
+
     def select(self):
         self.selected = True
         self.active = self.states[1]
@@ -101,22 +104,36 @@ class Hex():
         self.unit.y = self.y
         self.unit.row = self.row
         self.unit.col = self.col
+        self.occupyFlag(unit.owner)
+
 
     def moveOutUnit(self):
         self.unit = None
 
+    def occupyFlag(self, owner):
+        if self.lastOccupant != owner:
+            if self.flag is not None:
+                self.flag.switchFlag(owner)
+        self.lastOccupant = owner
 
 class Flag:
-    def __init__(self, batch, group, texture_path):
-        self.texture = image.load(texture_path)
-        self.blit = self.texture.get_texture()
-        self.blit.width *= scale
-        self.blit.height *= scale
+    def __init__(self, batch, group, initialTexture, switchedTexture, initialOwner):
+        self.initialTexture = image.load(initialTexture)
+        self.switchedTexture = image.load(switchedTexture)
+        self.initialBlit = self.initialTexture.get_texture()
+        self.switchedBlit = self.switchedTexture.get_texture()
+        self.initialBlit.width *= scale
+        self.initialBlit.height *= scale
+        self.switchedBlit.width *= scale
+        self.switchedBlit.height *= scale
+        self.blits = [self.initialBlit, self.switchedBlit]
+        self.owner = initialOwner
         self.x = 0
         self.y = 0
+        self.activeBlit = self.blits[0]
         self.states = [
-            self.blit.get_region(0, 0, w, h),
-            self.blit.get_region(w, 0, w, h),  # border light
+            self.activeBlit.get_region(0, 0, w, h),
+            self.activeBlit.get_region(w, 0, w, h),  # border light
         ]
         self.active = self.states[0]
         self.sprite = pyglet.sprite.Sprite(self.active, x=self.x, y=self.y, batch=batch, group=group)
@@ -133,3 +150,15 @@ class Flag:
         else:
             self.active = self.states[0]
         self.sprite.image = self.active
+
+    def switchFlag(self, owner):
+        if self.activeBlit == self.blits[0]:
+            self.activeBlit = self.blits[1]
+        elif self.activeBlit == self.blits[1]:
+            self.activeBlit = self.blits[0]
+        self.states = [
+            self.activeBlit.get_region(0, 0, w, h),
+            self.activeBlit.get_region(w, 0, w, h),  # border light
+        ]
+        self.owner = owner
+        self.active = self.states[0]

@@ -3,6 +3,7 @@ from pyglet import window, app, clock
 from states.boot_up import BOOT_UP
 from states.level_explorer import LEVEL_EXPLORER
 from states.game import GAME
+from states.shop import SHOP
 import const
 window = const.window
 
@@ -15,7 +16,8 @@ def on_draw():
         LEVEL_EXPLORER.draw()
     if const.state == "game":
         GAME.draw()
-
+    if const.state == "shop":
+        SHOP.draw()
 
 
 @window.event
@@ -27,6 +29,8 @@ def update():
     if const.state == "game":
         GAME.passive_update()
         GAME.flicker_update()
+    if const.state == "shop":
+        SHOP.passive_update()
 
 clock.schedule_interval(GAME.flicker_update, 1 / 2)
 clock.schedule_interval(BOOT_UP.passive_update, 1 / const.FPS)
@@ -49,6 +53,9 @@ def on_mouse_press(mouse_x, mouse_y, button, modifiers):
         LEVEL_EXPLORER.press_update(mouse_x, mouse_y)
     if const.state == "game":
         GAME.press_update(mouse_x, mouse_y)
+    if const.state == "shop":
+        SHOP.press_update(mouse_x, mouse_y)
+
 
 
 @window.event
@@ -61,6 +68,9 @@ def on_mouse_release(mouse_x, mouse_y, button, modifiers):
         LEVEL_EXPLORER.release_update(mouse_x, mouse_y)
     if const.state == "game":
         GAME.release_update(mouse_x, mouse_y, button)
+    if const.state == "shop":
+        SHOP.release_update(mouse_x, mouse_y)
+
 
 
 @window.event
@@ -73,6 +83,9 @@ def on_mouse_motion(mouse_x, mouse_y, dx, dy):
         LEVEL_EXPLORER.motion_update(mouse_x, mouse_y)
     if const.state == "game":
         GAME.motion_update(mouse_x, mouse_y)
+    if const.state == "shop":
+        SHOP.motion_update(mouse_x, mouse_y)
+
 
 
 @window.event

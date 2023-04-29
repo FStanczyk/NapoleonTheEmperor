@@ -4,7 +4,8 @@
             name="Piechota"
             nation="France"
             type="infantry"
-            moveRange="3"
+            moveRange="4"
+            spotRange="3"
             strength="5"
             texture="graphics/units/0_france.png"
     />
@@ -13,7 +14,8 @@
             name="Piechota"
             nation="Italy"
             type="infantry"
-            moveRange="3"
+            moveRange="4"
+            spotRange="3"
             strength="2"
             texture="graphics/units/1_italy.png"
     />
