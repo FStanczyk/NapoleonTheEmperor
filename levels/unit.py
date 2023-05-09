@@ -1,7 +1,5 @@
 from pyglet import graphics, image, text
 from pyglet.gl import *
-glEnable(GL_BLEND)
-glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 from const import FONT
 scale = 1.8
 w = 64* scale
@@ -29,13 +27,18 @@ class Unit():
         self.img = texture
         self.texture =  image.load(self.img)
         self.blit =  self.texture.get_texture()
+        gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_NEAREST)
+
         self.blit.width = w
         self.blit.height = h
+
         self.baseMoveRange = 0
         self.baseSpotRange = 0
+        self.baseAttackRange = 0
         self.strength = 0
         self.experience = 0
         self.hp = 10
+
         self.x = 0
         self.y = 0
         self.row = 0
@@ -43,6 +46,8 @@ class Unit():
         self.sprite = pyglet.sprite.Sprite(self.blit, x=self.x, y=self.y) #, batch=batch, group=group)
         self.banner = hp_board_player if self.owner == 0 else hp_board_enemy
         self.banner_blit = self.banner.get_texture()
+        gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_NEAREST)
+
         self.banner_blit.width = w
         self.banner_blit.height = h
         self.banner_sprite = pyglet.sprite.Sprite(self.banner_blit, x=self.x, y=self.y)#, batch=batch, group=group)
@@ -72,9 +77,8 @@ class Unit():
         if not self.attacked:
             self.tempSpotted = True
             self.attacked = True
-            return self.strength
-        return 0
-
+            return True
+        return False
     def hit(self, strength):
         self.hp -= strength
         self.selected_cords_text.text = str(self.hp)

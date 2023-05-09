@@ -65,6 +65,7 @@ class Level():
             U.type = sample.get('type')
             U.experience = int(unit.get('experience'))
             U.baseMoveRange = int(sample.get('moveRange'))
+            U.baseAttackRange = int(sample.get('attackRange'))
             U.baseSpotRange = int(sample.get('spotRange'))
             U.strength = int(sample.get('strength'))
             U.unit_id = int(id)

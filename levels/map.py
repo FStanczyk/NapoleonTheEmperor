@@ -1,23 +1,31 @@
 import pyglet
 from pyglet.window import mouse
+from pyglet import text
+from pyglet import *
+import time
+from levels.calculations import calculateDamage
+from animation import explosionAnimation1, explosionAnimation2
+
 from const import \
-    MOVEABLE_WINDOW_W, MOVEABLE_WINDOW_H, \
+    FONT, YELLOW, RED,\
     MOVE_MARGIN, MOVE_VELOCITY, \
-    SCREEN_HEIGHT, SCREEN_WIDTH, \
-    GUI_TOP, GUI_LEFT, GUI_RIGHT, GUI_BOTTOM
+    SCREEN_HEIGHT, SCREEN_WIDTH
 from levels.hex import Hex, Flag
 
 
 W_LEFT_MOVE = MOVE_MARGIN
 W_RIGHT_MOVE = SCREEN_WIDTH - MOVE_MARGIN
 H_TOP_MOVE = SCREEN_HEIGHT - MOVE_MARGIN
-H_BOTTOM_MOVE = MOVE_MARGIN
-
-
+H_BOTTOM_MOVE = MOVE_MARGIN+ 48
+currentOccuranceX = SCREEN_WIDTH/2
+currentOccuranceY = SCREEN_HEIGHT - 120
+textBatch = pyglet.graphics.Batch()
 
 class Map():
     def __init__(self, texturePath):
         image = pyglet.image.load(texturePath).get_texture()
+        gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_NEAREST)
+
         image.width *= 1.5
         image.height *= 1.5
 
@@ -42,14 +50,33 @@ class Map():
         self.action__move = False
         self.action__attack = False
         self.deploymentMode = False
+        self.currentOccurrence = text.Label('',
+                                            font_name=FONT,
+                                            font_size=12,
+                                            x=currentOccuranceX, y=currentOccuranceY,
+                                            color=YELLOW,
+                                            batch=textBatch
+                                            )
+        self.borderLabel = text.Label('',
+                                 font_name=FONT,
+                                 font_size=12,
+                                 x=currentOccuranceX, y=currentOccuranceY,
+                                 color=(0,0,0,255),
+                                 # bold=True,
+                                 batch = textBatch,
+                                 )
 
     def draw(self):
         self.batch.draw()
         for hex in self.hexMap.values():
             if hex.isVisible is True:
                 hex.drawUnit()
+        dt = clock.tick()
+        explosionAnimation1.draw(dt)
+        explosionAnimation2.draw(dt)
 
     def moveMap(self, dir):
+        if self.action__attack is True: return
         if dir == 'top':
             self.map.y += MOVE_VELOCITY
         elif dir == 'bottom':
@@ -94,14 +121,13 @@ class Map():
         pass
 
     def release_update(self, mouse_x, mouse_y, button):
-
+        if self.action__attack is True: return
         alreadyHeld = self.selectedHex
-
-
         if button & mouse.LEFT:
             self.calcSelectedHex(mouse_x, mouse_y)
         elif button & mouse.RIGHT:
             self.deselectHex()
+            self.unsetDeploymentMode()
 
         self.action(alreadyHeld)
         self.deployUnit(self.selectedHex, self.heldUnit)
@@ -173,14 +199,53 @@ class Map():
                     self.moveUnit(alreadyHeld, self.selectedHex)
 
                 # actions for neighbour hexes
-                neighbour_hexes = self.calculateNeighbours(alreadyHeld.row, alreadyHeld.col)
-                if (self.selectedHex.row, self.selectedHex.col) in neighbour_hexes:
+                if alreadyHeld.unit is None: return
+                attackable_hexes = self.calculateSpot(alreadyHeld.row, alreadyHeld.col, alreadyHeld.unit.baseAttackRange)
+                if (self.selectedHex.row, self.selectedHex.col) in attackable_hexes:
                     # attacking
-                    if self.selectedHex.unit is not None and self.selectedHex.unit.owner != 0:
-                            damage = alreadyHeld.unit.attack()
-                            self.selectedHex.unit.hit(damage)
-                            if self.selectedHex.unit.destroyed is True:
-                                self.destroyUnit(self.selectedHex)
+                    self.attack(alreadyHeld)
+
+    def attack(self, alreadyHeld):
+        if alreadyHeld.unit is None: return
+        if alreadyHeld.unit.attack() is False: return
+        if self.selectedHex.unit is not None and self.selectedHex.unit.owner != 0:
+            responseInRange = False if (alreadyHeld.row, alreadyHeld.col) not in self.calculateSpot(self.selectedHex.row, self.selectedHex.col, self.selectedHex.unit.baseAttackRange) else True
+            damage_given, damage_taken, ruggedDefense = calculateDamage(alreadyHeld.unit, self.selectedHex.unit, alreadyHeld, self.selectedHex)
+            if responseInRange == False: damage_taken = 0
+            self.currentOccurrence.text = 'attacking'
+            self.currentOccurrence.x = alreadyHeld.x + 16
+            self.currentOccurrence.y = alreadyHeld.y + 100
+            self.borderLabel.text = 'attacking'
+            self.borderLabel.x = alreadyHeld.x + 16 - 2
+            self.borderLabel.y = alreadyHeld.y + 100 - 2
+            if ruggedDefense is True:
+                self.currentOccurrence.text = 'RUGGED DEFENSE!'
+                self.currentOccurrence.color = RED
+                self.currentOccurrence.x = self.selectedHex.x + 16
+                self.currentOccurrence.y = self.selectedHex.y + 100
+                self.borderLabel.text = 'RUGGED DEFENSE!'
+                self.borderLabel.x = self.selectedHex.x + 16 - 1
+                self.borderLabel.y = self.selectedHex.y + 100 - 1
+            self.action__attack = True
+            pyglet.clock.schedule_once(lambda dt: self.finish_attack(alreadyHeld, damage_given, damage_taken), 4)
+
+    def finish_attack(self, alreadyHeld, damage_given, damage_taken):
+        self.selectedHex.unit.hit(damage_given)
+        alreadyHeld.unit.hit(damage_taken)
+        self.currentOccurrence.text = ''
+        self.currentOccurrence.color = YELLOW
+        self.currentOccurrence.x = 0
+        self.currentOccurrence.y = 0
+        self.borderLabel.text = ''
+        self.borderLabel.x = 0
+        self.borderLabel.y = 0
+        self.action__attack = False
+        if damage_taken > 0: explosionAnimation1.startAtPos(alreadyHeld.x, alreadyHeld.y)
+        if damage_given > 0: explosionAnimation2.startAtPos(self.selectedHex.unit.x, self.selectedHex.unit.y)
+        if self.selectedHex.unit.destroyed is True:
+            self.destroyUnit(self.selectedHex)
+        if alreadyHeld.unit.destroyed is True:
+            self.destroyUnit(alreadyHeld.unit)
 
     def placeUnit(self, row, col, unit):
         hex_key = f"{row},{col}"
@@ -193,6 +258,7 @@ class Map():
     def showVisibleHexes(self):
         self.showSpottedHexes() # if non unit is selected
         self.showMovableHexes() # if there is a unit selected
+        self.showUnitsInRange()
 
     def calculateNeighbours(self, row, col):
         hexagons = set()
@@ -229,6 +295,18 @@ class Map():
                     hexagons.update(self.calculateMoveRange(neighbour[0], neighbour[1], bRange - hex_roughness))
 
         return hexagons
+
+    def showUnitsInRange(self):
+        if self.selectedHex is None or self.selectedHex.unit is None: return
+        row = self.selectedHex.row
+        col = self.selectedHex.col
+        attackRange = self.selectedHex.unit.baseAttackRange
+        if self.deploymentMode is True: return
+        hexagons = self.calculateSpot(row, col, attackRange)
+        for hexagon in hexagons:
+            if self.hexMap[f"{hexagon[0]},{hexagon[1]}"].unit is not None:
+                self.hexMap[f"{hexagon[0]},{hexagon[1]}"].isVisible = True
+
 
     def showSpottedHexes(self):
         if self.deploymentMode is True: return
@@ -315,13 +393,19 @@ class Map():
         self.showDeployableHexes()
         self.refreshTurnHexSprites()
 
+    def unsetDeploymentMode(self):
+        if self.deploymentMode == True:
+            self.deploymentMode = False
+            self.selectedHex = None
+            self.heldUnit = None
+
     def deployUnit(self, hex, unit):
-        row = 0
-        col = 0
-        if hex is not None:
-            row = hex.row
-            col = hex.col
         if self.deploymentMode is True:
+            row = 0
+            col = 0
+            if hex is not None:
+                row = hex.row
+                col = hex.col
             unit.attacked = True
             unit.moved = True
             unit.row = row
@@ -329,6 +413,7 @@ class Map():
             self.players[0].units.append(unit)
             self.placeUnit(row, col, unit)
             self.deploymentMode = False
+
 MAPS = {
     "Tutorial": Map('graphics/maps/tutorial_map.jpg')
 }

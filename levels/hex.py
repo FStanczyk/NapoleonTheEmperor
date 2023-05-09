@@ -1,7 +1,4 @@
-from pyglet import graphics, image
-from pyglet.gl import *
-glEnable(GL_BLEND)
-
+from pyglet import *
 from const import MOVE_VELOCITY, TERRAINS, TERRAINS_ROUGHNESS
 scale = 1.8
 w = 64 * scale
@@ -9,6 +6,8 @@ h = (64 - 9)* scale
 
 texture = image.load('graphics/maps/hex.png')
 blit = texture.get_texture()
+gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_NEAREST)
+
 blit.width *= scale
 blit.height *= scale
 
@@ -18,8 +17,8 @@ class Hex():
         self.terrainType = TERRAINS[0] # standard is "field"
         self.terrainRoughness = TERRAINS_ROUGHNESS[0]
         self.isRoad = False
-        self.flag = None
-        self.name = None
+        self.flag = None # also tells that it is a city
+        self.name = ''
         self.inMoveRange = False
         self.inAttackRange = False
         self.isMovable = True
@@ -41,12 +40,11 @@ class Hex():
             blit.get_region(3 * w, 0, w, h)  # is not visible
         ]
         self.active = self.states[3]
-        self.sprite = pyglet.sprite.Sprite(self.active, x=self.x, y=self.y, batch=batch, group=group)
+        self.sprite = sprite.Sprite(self.active, x=self.x, y=self.y, batch=batch, group=group)
 
     def drawUnit(self):
         if self.unit is not None:
             self.unit.draw()
-            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 
     def release_update(self, mouse_x, mouse_y):
         if not self.isVisible:
@@ -121,7 +119,10 @@ class Flag:
         self.initialTexture = image.load(initialTexture)
         self.switchedTexture = image.load(switchedTexture)
         self.initialBlit = self.initialTexture.get_texture()
+        gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_NEAREST)
         self.switchedBlit = self.switchedTexture.get_texture()
+        gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_NEAREST)
+
         self.initialBlit.width *= scale
         self.initialBlit.height *= scale
         self.switchedBlit.width *= scale
@@ -136,7 +137,7 @@ class Flag:
             self.activeBlit.get_region(w, 0, w, h),  # border light
         ]
         self.active = self.states[0]
-        self.sprite = pyglet.sprite.Sprite(self.active, x=self.x, y=self.y, batch=batch, group=group)
+        self.sprite = sprite.Sprite(self.active, x=self.x, y=self.y, batch=batch, group=group)
 
     def move(self, x, y):
         self.x = x

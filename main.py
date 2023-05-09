@@ -1,4 +1,5 @@
 import pyglet as pg
+from pyglet.gl import *
 from pyglet import window, app, clock
 from states.boot_up import BOOT_UP
 from states.level_explorer import LEVEL_EXPLORER
@@ -6,6 +7,8 @@ from states.game import GAME
 from states.shop import SHOP
 import const
 window = const.window
+# glEnable(GL_BLEND)
+# glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 
 @window.event
 def on_draw():

@@ -1,22 +1,46 @@
 <data>
     <Unit
             id="0"
-            name="Piechota"
+            name="Fizylierzy"
             nation="France"
             type="infantry"
             moveRange="4"
             spotRange="3"
+            attackRange="1"
             strength="5"
-            texture="graphics/units/0_france.png"
+            texture="graphics/units/fusiliers_france.png"
     />
     <Unit
             id="1"
-            name="Piechota"
+            name="Welita"
             nation="Italy"
             type="infantry"
             moveRange="4"
             spotRange="3"
+            attackRange="1"
             strength="2"
-            texture="graphics/units/1_italy.png"
+            texture="graphics/units/velites_italy.png"
+    />
+    <Unit
+            id="2"
+            name="Artyleria piechoty"
+            nation="Italy"
+            type="artillery"
+            moveRange="2"
+            spotRange="3"
+            attackRange="2"
+            strength="5"
+            texture="graphics/units/foot_artillery_france.png"
+    />
+    <Unit
+            id="3"
+            name="Artyleria piechoty"
+            nation="Italy"
+            type="artillery"
+            moveRange="2"
+            spotRange="3"
+            attackRange="2"
+            strength="5"
+            texture="graphics/units/foot_artillery_italy.png"
     />
 </data>

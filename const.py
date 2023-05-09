@@ -1,5 +1,5 @@
 import pyglet
-
+from pyglet import *
 FPS = 60.0  # less then 20 seems very unpleasant
 SCREEN_WIDTH = 1520
 SCREEN_HEIGHT = 720
@@ -13,6 +13,7 @@ GUI_LEFT = 29
 GUI_RIGHT_WIDTH = 134
 GUI_RIGHT = SCREEN_WIDTH - GUI_RIGHT_WIDTH
 YELLOW = (200, 142, 49, 255)
+RED = (255, 17, 49, 255)
 FONT = 'VCR osd mono'
 STATES = ["boot_up",
           "level_explorer",
@@ -54,6 +55,7 @@ level = LEVELS[0]
 window = pyglet.window.Window(SCREEN_WIDTH, SCREEN_HEIGHT)
 
 MOVE_VELOCITY = 15
+
 
 def set_loading(loading):
     global LOADING

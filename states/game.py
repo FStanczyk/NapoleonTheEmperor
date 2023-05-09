@@ -21,7 +21,9 @@ exp_y = 25
 exp_gap = exp_w + 4
 exp_blit = exp_medal.get_texture()
 unit_name_x = SCREEN_WIDTH - SCREEN_WIDTH/3 + 48
+hex_name_x = SCREEN_WIDTH/2 - 80
 unit_name_y = 25
+
 exp_states = [
     exp_blit.get_region(0, 0, exp_w,exp_h),
     exp_blit.get_region(exp_w, 0, exp_w,exp_h),
@@ -74,6 +76,14 @@ class Game:
                                     anchor_y='center',
                                     color = YELLOW
                                     )
+        self.selected_cords_text = text.Label(' ',
+                                              font_name=FONT,
+                                              font_size=14,
+                                              x=terrain_x, y=info_top_y - 16,
+                                              anchor_x='center',
+                                              anchor_y='center',
+                                              color=YELLOW
+                                              )
         self.selected_roughness = text.Label(' ',
                                               font_name=FONT,
                                               font_size=14,
@@ -107,6 +117,13 @@ class Game:
                                    x=unit_name_x, y=unit_name_y - 14,
                                    color=YELLOW
                                    )
+        self.hex_name = text.Label('',
+                                    font_name=FONT,
+                                    font_size=18,
+                                    x=hex_name_x, y=info_top_y - 14,
+                                    color=YELLOW
+                                    )
+
         rectangle = shapes.Rectangle(SCREEN_WIDTH, 0, 0, SCREEN_HEIGHT, color=(0, 0, 0), batch=self.batch)
 
         self.Buttons = [
@@ -164,6 +181,7 @@ class Game:
             _button.update_press(mouse_x, mouse_y)
 
     def release_update(self, mouse_x, mouse_y, button):
+        if self.level.map.action__attack is True: return
         self.exp_set = [0, 0, 0, 0, 0]
 
         if self.playerTurn == 0:
@@ -176,6 +194,7 @@ class Game:
                 self.selected_terrain_text.text = self.level.map.selectedHex.terrainType.upper()
                 self.selected_roughness.text = f"Roughness: {self.level.map.selectedHex.terrainRoughness}"
                 self.selected_cords_text.text = f"{self.level.map.selectedHex.row}, {self.level.map.selectedHex.col}"
+                self.hex_name.text = self.level.map.selectedHex.name
                 if self.level.map.selectedHex.unit is not None:
                     self.selectUnit()
                     experience = self.level.map.selectedHex.unit.experience
@@ -189,6 +208,7 @@ class Game:
         elif button & mouse.RIGHT:
             self.selected_terrain_text.text = ''
             self.selected_cords_text.text = ''
+            self.hex_name.text = ''
 
 
         self.unit_exp_set = [
@@ -206,6 +226,10 @@ class Game:
             self.selected_terrain_text.draw()
             self.selected_cords_text.draw()
             self.selected_roughness.draw()
+            self.hex_name.draw()
+            if self.level.map.action__attack is True:
+                self.level.map.borderLabel.draw()
+                self.level.map.currentOccurrence.draw()
             for _button in self.Buttons:
                 _button.draw()
             if self.isUnitSelected is True:
@@ -294,5 +318,7 @@ class Game:
 
         self.level.map.players[0].cities = playerCities
         self.level.map.players[1].cities = aiCities
+
+    # def
 
 GAME = Game()
