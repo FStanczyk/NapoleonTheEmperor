@@ -16,9 +16,10 @@
         <Hex row="8" col="7" terrainType="0" initialFlag="graphics/flags/flag_italy.png" switchedFlag="graphics/flags/flag_france.png" name="Main base" initialOwner="1" isRoad="False"/>
     </hexes>
     <units> <!-- Here we will define all starting units and their positions -->
-        <Unit id="0" player="0" row="6" col="4" experience="7"/>
+        <Unit id="0" player="0" row="15" col="30" experience="7"/>
         <Unit id="0" player="0" row="10" col="6" experience="2"/>
         <Unit id="2" player="0" row="12" col="6" experience="3"/>
         <Unit id="1" player="1" row="9" col="7" experience="3"/>
+        <Unit id="3" player="1" row="11" col="5" experience="9"/>
     </units>
 </scenario>

@@ -32,8 +32,8 @@ def calculateDamage(attackingUnit, defendingUnit, attackingHex, defendingHex):
     terrain_advantage_defender = terrain_boost[def_terrain][att_terrain]
     att = attackingUnit.strength * attacker_multiplier
     dfn = defendingUnit.strength * defender_multiplier
-    exp_att_boost = experience_difference/10 if experience_difference > 0 else -(experience_difference/10)
-    exp_def_boost = experience_difference/10 if experience_difference < 0 else -(experience_difference/10)
+    exp_att_boost = experience_difference/10
+    exp_def_boost = -(experience_difference/10) if experience_difference < 0 else experience_difference/10
     hp_att_boost = hp_difference/10  if hp_difference > 0 else -(hp_difference/10)
     hp_def_boost = hp_difference/10  if hp_difference < 0 else -(hp_difference/10)
     damage_given = ((att + att * exp_att_boost) * terrain_advantage_attacker)

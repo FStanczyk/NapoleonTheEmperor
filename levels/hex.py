@@ -1,6 +1,6 @@
 from pyglet import *
-from const import MOVE_VELOCITY, TERRAINS, TERRAINS_ROUGHNESS
-scale = 1.8
+from const import MOVE_VELOCITY, TERRAINS, TERRAINS_ROUGHNESS, level
+scale = level["hexScale"]
 w = 64 * scale
 h = (64 - 9)* scale
 
@@ -11,8 +11,11 @@ gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_NEAREST)
 blit.width *= scale
 blit.height *= scale
 
+
 class Hex():
     def __init__(self, row, col, batch, group):
+        self.w = w
+        self.h = h
         self.unit = None
         self.terrainType = TERRAINS[0] # standard is "field"
         self.terrainRoughness = TERRAINS_ROUGHNESS[0]
@@ -24,12 +27,15 @@ class Hex():
         self.isMovable = True
         self.isVisible = False
         self.selected = False
+        self.isObjective = False
         self.onOccupation = None
         self.lastOccupant = -1
         self.row = row
         self.col = col
         self.x = col * (3*w/4) - w
         self.y = row * h - h
+        self.absX = self.x # asbX/Y holds the x/y value of the initialized map, not being affected by mouse moving
+        self.absY = self.y
         if col %2 == 1:
             self.y += h/2
 
@@ -123,6 +129,7 @@ class Flag:
         self.switchedBlit = self.switchedTexture.get_texture()
         gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_NEAREST)
 
+        self.isFlickering = False
         self.initialBlit.width *= scale
         self.initialBlit.height *= scale
         self.switchedBlit.width *= scale
@@ -146,6 +153,7 @@ class Flag:
         self.sprite.y = y
 
     def ligthSwitch(self):
+        if self.isFlickering is False: return
         if self.active is self.states[0]:
             self.active = self.states[1]
         else:

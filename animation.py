@@ -1,6 +1,7 @@
 from pyglet import *
-import time
-scale = 1.5
+from const import level
+
+scale = level["scaling"]
 class Animation:
     def __init__(self, spritesheet, w, h, frames_len, frame_delay, start_x=0, start_y=0):
         self.pending = False

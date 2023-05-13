@@ -1,8 +1,7 @@
 from bg import Background
 from button import Button
-from pyglet import image, sprite, text
-from const import SCREEN_WIDTH, SCREEN_HEIGHT, FONT, switch_state, switch_level
-
+from const import SCREEN_WIDTH, SCREEN_HEIGHT, FONT, switch_state, switch_level, level
+from states.game import GAME, Game
 names = ['Test1', 'Test2','Test3', 'Test4','Test5', 'Test6', 'Test2','Test3', 'Test4','Test5', 'Test6', 'Test2','Test3', 'Test4','Test5', 'Test6']
 x_offset = SCREEN_WIDTH / 3
 x_gap = 24
@@ -12,8 +11,9 @@ y_bottomPadding = 128
 rows = 8
 
 def start_level(levelId):
-    switch_state(3)
     switch_level(levelId)
+    GAME.__init__()
+
 
 class Level_Explorer:
     def __init__(self):

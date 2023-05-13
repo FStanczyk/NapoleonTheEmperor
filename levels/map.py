@@ -1,41 +1,38 @@
 import pyglet
 from pyglet.window import mouse
-from pyglet import text
 from pyglet import *
-import time
 from levels.calculations import calculateDamage
 from animation import explosionAnimation1, explosionAnimation2
-
 from const import \
-    FONT, YELLOW, RED,\
+    FONT, YELLOW, RED, \
     MOVE_MARGIN, MOVE_VELOCITY, \
-    SCREEN_HEIGHT, SCREEN_WIDTH
+    SCREEN_HEIGHT, SCREEN_WIDTH, level
 from levels.hex import Hex, Flag
-
 
 W_LEFT_MOVE = MOVE_MARGIN
 W_RIGHT_MOVE = SCREEN_WIDTH - MOVE_MARGIN
 H_TOP_MOVE = SCREEN_HEIGHT - MOVE_MARGIN
-H_BOTTOM_MOVE = MOVE_MARGIN+ 48
-currentOccuranceX = SCREEN_WIDTH/2
+H_BOTTOM_MOVE = MOVE_MARGIN + 48
+currentOccuranceX = SCREEN_WIDTH / 2
 currentOccuranceY = SCREEN_HEIGHT - 120
 textBatch = pyglet.graphics.Batch()
 
+scale = level["scaling"]
 class Map():
     def __init__(self, texturePath):
         image = pyglet.image.load(texturePath).get_texture()
         gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_NEAREST)
 
-        image.width *= 1.5
-        image.height *= 1.5
+        image.width *= scale
+        image.height *= scale
 
         self.batch = pyglet.graphics.Batch()
         self.group = pyglet.graphics.Group()
         self.map = pyglet.sprite.Sprite(image, batch=self.batch)
         self.hexMap = {}
         self.players = []
-        rowsNeeded = int(image.height/ (64* 1.5)) + 1
-        colsNeeded = int(image.width/64 * 0.75) + 2
+        rowsNeeded = int(image.height / (64 * 1.5)) + 1
+        colsNeeded = int(image.width / 64 * 0.75) + 2
         for r in range(rowsNeeded):
             for c in range(colsNeeded):
                 hex_key = f"{r},{c}"
@@ -58,19 +55,19 @@ class Map():
                                             batch=textBatch
                                             )
         self.borderLabel = text.Label('',
-                                 font_name=FONT,
-                                 font_size=12,
-                                 x=currentOccuranceX, y=currentOccuranceY,
-                                 color=(0,0,0,255),
-                                 # bold=True,
-                                 batch = textBatch,
-                                 )
+                                      font_name=FONT,
+                                      font_size=12,
+                                      x=currentOccuranceX, y=currentOccuranceY,
+                                      color=(0, 0, 0, 255),
+                                      # bold=True,
+                                      batch=textBatch,
+                                      )
 
     def draw(self):
         self.batch.draw()
-        for hex in self.hexMap.values():
-            if hex.isVisible is True:
-                hex.drawUnit()
+        for _hex in self.hexMap.values():
+            if _hex.isVisible is True:
+                _hex.drawUnit()
         dt = clock.tick()
         explosionAnimation1.draw(dt)
         explosionAnimation2.draw(dt)
@@ -182,7 +179,8 @@ class Map():
             if not hex.selected:
                 hex.refreshHex()
 
-    def setHex(self, row, col, isRoad, name, terrainType, terrainRoughness, initialFlag, switchedFlag=None, initialOwner=None):
+    def setHex(self, row, col, isRoad, name, terrainType, terrainRoughness, initialFlag, switchedFlag=None,
+               initialOwner=None):
         hex_key = f"{row},{col}"
         self.hexMap[hex_key].terrainType = terrainType
         self.hexMap[hex_key].terrainRoughness = terrainRoughness
@@ -193,14 +191,15 @@ class Map():
 
     def action(self, alreadyHeld):
         if self.selectedHex is not None:
-            if alreadyHeld and alreadyHeld.unit is not None and alreadyHeld.unit.owner == 0: #If unit was already selected
-                #Moving
+            if alreadyHeld and alreadyHeld.unit is not None and alreadyHeld.unit.owner == 0:  # If unit was already selected
+                # Moving
                 if self.selectedHex.unit is None:
                     self.moveUnit(alreadyHeld, self.selectedHex)
 
                 # actions for neighbour hexes
                 if alreadyHeld.unit is None: return
-                attackable_hexes = self.calculateSpot(alreadyHeld.row, alreadyHeld.col, alreadyHeld.unit.baseAttackRange)
+                attackable_hexes = self.calculateSpot(alreadyHeld.row, alreadyHeld.col,
+                                                      alreadyHeld.unit.baseAttackRange)
                 if (self.selectedHex.row, self.selectedHex.col) in attackable_hexes:
                     # attacking
                     self.attack(alreadyHeld)
@@ -209,8 +208,10 @@ class Map():
         if alreadyHeld.unit is None: return
         if alreadyHeld.unit.attack() is False: return
         if self.selectedHex.unit is not None and self.selectedHex.unit.owner != 0:
-            responseInRange = False if (alreadyHeld.row, alreadyHeld.col) not in self.calculateSpot(self.selectedHex.row, self.selectedHex.col, self.selectedHex.unit.baseAttackRange) else True
-            damage_given, damage_taken, ruggedDefense = calculateDamage(alreadyHeld.unit, self.selectedHex.unit, alreadyHeld, self.selectedHex)
+            responseInRange = False if (alreadyHeld.row, alreadyHeld.col) not in self.calculateSpot(
+                self.selectedHex.row, self.selectedHex.col, self.selectedHex.unit.baseAttackRange) else True
+            damage_given, damage_taken, ruggedDefense = calculateDamage(alreadyHeld.unit, self.selectedHex.unit,
+                                                                        alreadyHeld, self.selectedHex)
             if responseInRange == False: damage_taken = 0
             self.currentOccurrence.text = 'attacking'
             self.currentOccurrence.x = alreadyHeld.x + 16
@@ -245,7 +246,7 @@ class Map():
         if self.selectedHex.unit.destroyed is True:
             self.destroyUnit(self.selectedHex)
         if alreadyHeld.unit.destroyed is True:
-            self.destroyUnit(alreadyHeld.unit)
+            self.destroyUnit(alreadyHeld)
 
     def placeUnit(self, row, col, unit):
         hex_key = f"{row},{col}"
@@ -256,15 +257,16 @@ class Map():
         self.hexMap[hex_key].unit = None
 
     def showVisibleHexes(self):
-        self.showSpottedHexes() # if non unit is selected
-        self.showMovableHexes() # if there is a unit selected
+        self.showSpottedHexes()  # if non unit is selected
+        self.showMovableHexes()  # if there is a unit selected
         self.showUnitsInRange()
 
     def calculateNeighbours(self, row, col):
         hexagons = set()
         hexagons.add((row, col))
         r, c = row, col
-        dirs = [(1, 0), (0, 1), (-1, 0), (-1, -1), (1, -1), (1, 0)] if col % 2 == 1 else [(1, 0), (-1, 1), (-1, 0), (0, -1), (0, -1), (1, 0)]
+        dirs = [(1, 0), (0, 1), (-1, 0), (-1, -1), (1, -1), (1, 0)] if col % 2 == 1 else [(1, 0), (-1, 1), (-1, 0),
+                                                                                          (0, -1), (0, -1), (1, 0)]
         for dr, dc in dirs:
             r, c = r + dr, c + dc
             hexagons.add((r, c))
@@ -288,7 +290,8 @@ class Map():
         hexagons.add((row, col))
         neighbours = self.calculateNeighbours(row, col)
         for neighbour in neighbours:
-            hex_roughness= self.hexMap[f"{neighbour[0]},{neighbour[1]}"].terrainRoughness
+            if f"{neighbour[0]},{neighbour[1]}" not in self.hexMap: continue
+            hex_roughness = self.hexMap[f"{neighbour[0]},{neighbour[1]}"].terrainRoughness
             if bRange >= hex_roughness:
                 hexagons.add(neighbour)
                 if bRange > hex_roughness:
@@ -304,9 +307,9 @@ class Map():
         if self.deploymentMode is True: return
         hexagons = self.calculateSpot(row, col, attackRange)
         for hexagon in hexagons:
+            if f"{hexagon[0]},{hexagon[1]}" not in  self.hexMap.values(): continue
             if self.hexMap[f"{hexagon[0]},{hexagon[1]}"].unit is not None:
                 self.hexMap[f"{hexagon[0]},{hexagon[1]}"].isVisible = True
-
 
     def showSpottedHexes(self):
         if self.deploymentMode is True: return
@@ -352,14 +355,12 @@ class Map():
         hex.unit = None
 
     def selectNextNotMovedUnit(self):
-        print(self.players[0].units)
-
         for unit in self.players[0].units:
-            print(unit.moved)
             if unit.moved is False:
                 key = f"{unit.row},{unit.col}"
                 hex = self.hexMap[key]
                 self.selectHex(hex)
+                self.centerOn(0,0,hex)
                 break
         self.unspotAllHexes()
         self.showVisibleHexes()
@@ -414,6 +415,30 @@ class Map():
             self.placeUnit(row, col, unit)
             self.deploymentMode = False
 
-MAPS = {
-    "Tutorial": Map('graphics/maps/tutorial_map.jpg')
-}
+    def centerOn(self, x, y, hex=None):
+        # Determine the target position for the camera
+        target_x = x if hex is None else hex.absX + hex.w/2
+        target_y = y if hex is None else hex.absY + hex.h/2
+
+        new_x = SCREEN_WIDTH / 2 - target_x
+        new_y = SCREEN_HEIGHT / 2 - target_y
+
+        current_x = self.map.x
+        current_y = self.map.y
+        print(self.map.height - SCREEN_HEIGHT)
+        print(new_y)
+        if new_x > 0:
+            new_x = 0
+        if new_y > 0:
+            new_y = 0
+        if new_y < -(self.map.height - SCREEN_HEIGHT):
+            new_y = -(self.map.height - SCREEN_HEIGHT)
+        if new_x < -(self.map.width - SCREEN_WIDTH):
+            new_x = -(self.map.width - SCREEN_WIDTH)
+
+        self.map.y = new_y
+        self.map.x = new_x
+
+        for hex in self.hexMap.values():
+            hex.x += (new_x - current_x)
+            hex.y += (new_y - current_y)

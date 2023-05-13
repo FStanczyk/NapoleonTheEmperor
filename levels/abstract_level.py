@@ -1,11 +1,9 @@
-from levels.map import MAPS
 from levels.unit import Unit
 from levels.player import Player
 from states.shop import SHOP
 import xml.etree.ElementTree as ET
-import pyglet
-from pyglet import image
-scale = 1.8
+from const import level
+scale = level["scaling"]
 w = 64* scale
 h = (64 - 6)* scale
 from const import TERRAINS, TERRAINS_ROUGHNESS
@@ -82,12 +80,17 @@ class Level():
             self.map.placeUnit(row, col, U)
 
         for objective in objectives:
+            row = int(objective.get('row'))
+            col = int(objective.get('col'))
             obj = {
                 "type": objective.get('type'),
-                "row": int(objective.get('row')),
-                "col": int(objective.get('col')),
+                "row": row,
+                "col": col,
                 "for_turns": int(objective.get('for_turns'))
             }
+            self.map.hexMap[f"{row},{col}"].flag.isFlickering = True
+            self.map.hexMap[f"{row},{col}"].isObjective = True
+
             self.map.objectives.append(obj)
 
         products = []
@@ -110,9 +113,3 @@ class Level():
         SHOP.initProducts(self.map, products, int(start_balance))
 
         self.map.players = self.players
-
-
-
-LEVELS = {
-    "Tutorial" :Level('Tutorial', MAPS["Tutorial"], "scenarios/tutorial.xml")
-}

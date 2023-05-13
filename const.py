@@ -21,10 +21,22 @@ STATES = ["boot_up",
           "game",
           "shop"]
 
-LEVELS = [
-    "Tutorial"
-]
+# LEVELS = [
+#     "Tutorial"
+# ]
 
+LEVELS = [
+    {
+        "id": 1,
+        "name": "Tutorial",
+        "mapName": "Tutorial",
+        "mapTexture": 'graphics/maps/tutorial_map.jpg',
+        "scenarioPath": "scenarios/tutorial.xml",
+        "scaling": 1.5,
+        "hexScale": 1.8
+    }
+]
+# "Tutorial": Level('Tutorial', MAPS["Tutorial"], "scenarios/tutorial.xml")
 TERRAINS = {
     0: "field",
     1: "forest",
@@ -56,7 +68,6 @@ window = pyglet.window.Window(SCREEN_WIDTH, SCREEN_HEIGHT)
 
 MOVE_VELOCITY = 15
 
-
 def set_loading(loading):
     global LOADING
     LOADING = loading
@@ -67,8 +78,12 @@ def switch_state(_id):
     state = STATES[_id]
     print("switched to: " + state)
 
-def switch_level(_id):
+def switch_level(_id=None):
     global level
-    level = LEVELS[_id]
-    print("started level: " + level)
+    if _id == None:
+        level = None
+    else:
+        switch_state(3)
+        level = LEVELS[_id]
+        print("started level: " + level["name"])
 
