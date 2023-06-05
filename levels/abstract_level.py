@@ -45,8 +45,7 @@ class Level():
                 self.players[initialOwner].cities.add((int(row), int(col)))
             isRoad = hex.get('isRoad')
             if isRoad == "True":
-                print(isRoad)
-                terrainRoughness = 1
+                terrainRoughness = 1.8
             name = hex.get('name')
             self.map.setHex(row, col, isRoad, name, terrainType, terrainRoughness, initialFlag, switchedFlag, initialOwner)
             self.map.players = self.players

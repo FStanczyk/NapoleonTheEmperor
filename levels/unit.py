@@ -1,12 +1,12 @@
 from pyglet import graphics, image, text
 from pyglet.gl import *
-from const import FONT
-scale = 1.8
-w = 64* scale
-h = (64 - 6)* scale
+from const import FONT, level
 
 hp_board_player = image.load('graphics/misc/hp_board_0.png')
 hp_board_enemy = image.load('graphics/misc/hp_board_1.png')
+hexScale = level["hexScale"]
+w = 64* hexScale
+h = (64 - 6)* hexScale
 
 class Unit():
 
@@ -51,7 +51,8 @@ class Unit():
         self.banner_blit.width = w
         self.banner_blit.height = h
         self.banner_sprite = pyglet.sprite.Sprite(self.banner_blit, x=self.x, y=self.y)#, batch=batch, group=group)
-
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
         self.selected_cords_text = text.Label(str(self.hp),
                                               font_name=FONT,
                                               font_size=12,

@@ -165,9 +165,11 @@ class Flag:
             self.activeBlit = self.blits[1]
         elif self.activeBlit == self.blits[1]:
             self.activeBlit = self.blits[0]
+
         self.states = [
             self.activeBlit.get_region(0, 0, w, h),
             self.activeBlit.get_region(w, 0, w, h),  # border light
         ]
         self.owner = owner
         self.active = self.states[0]
+        self.sprite.image = self.active

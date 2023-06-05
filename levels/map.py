@@ -6,9 +6,9 @@ from animation import explosionAnimation1, explosionAnimation2
 from const import \
     FONT, YELLOW, RED, \
     MOVE_MARGIN, MOVE_VELOCITY, \
-    SCREEN_HEIGHT, SCREEN_WIDTH, level
+    SCREEN_HEIGHT, SCREEN_WIDTH, level, DEBUG_MODE
 from levels.hex import Hex, Flag
-
+import math
 W_LEFT_MOVE = MOVE_MARGIN
 W_RIGHT_MOVE = SCREEN_WIDTH - MOVE_MARGIN
 H_TOP_MOVE = SCREEN_HEIGHT - MOVE_MARGIN
@@ -18,6 +18,7 @@ currentOccuranceY = SCREEN_HEIGHT - 120
 textBatch = pyglet.graphics.Batch()
 
 scale = level["scaling"]
+hexScale = level["hexScale"]
 class Map():
     def __init__(self, texturePath):
         image = pyglet.image.load(texturePath).get_texture()
@@ -31,8 +32,9 @@ class Map():
         self.map = pyglet.sprite.Sprite(image, batch=self.batch)
         self.hexMap = {}
         self.players = []
-        rowsNeeded = int(image.height / (64 * 1.5)) + 1
-        colsNeeded = int(image.width / 64 * 0.75) + 2
+        rowsNeeded = math.ceil(int(image.height / 64))
+        colsNeeded = math.ceil(int((image.width - 64/2)/64)) + 2
+
         for r in range(rowsNeeded):
             for c in range(colsNeeded):
                 hex_key = f"{r},{c}"
@@ -307,14 +309,18 @@ class Map():
         if self.deploymentMode is True: return
         hexagons = self.calculateSpot(row, col, attackRange)
         for hexagon in hexagons:
-            if f"{hexagon[0]},{hexagon[1]}" not in  self.hexMap.values(): continue
+            if f"{hexagon[0]},{hexagon[1]}" in  self.hexMap.values(): continue
             if self.hexMap[f"{hexagon[0]},{hexagon[1]}"].unit is not None:
                 self.hexMap[f"{hexagon[0]},{hexagon[1]}"].isVisible = True
+
 
     def showSpottedHexes(self):
         if self.deploymentMode is True: return
         if self.selectedHex is None or self.selectedHex.unit is None or self.selectedHex.unit.owner != 0:
             for hex in self.hexMap.values():
+                if DEBUG_MODE is True:
+                    hex.isVisible = True
+                    continue
                 if hex.unit is not None and hex.unit.owner == 0:
                     visible = self.calculateSpot(hex.row, hex.col, hex.unit.baseSpotRange)
                     for v in visible:
@@ -425,8 +431,6 @@ class Map():
 
         current_x = self.map.x
         current_y = self.map.y
-        print(self.map.height - SCREEN_HEIGHT)
-        print(new_y)
         if new_x > 0:
             new_x = 0
         if new_y > 0:

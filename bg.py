@@ -15,7 +15,6 @@ class Background:
             if path is not None:
                 image_ = pyglet.image.load(path)
                 image = image_.get_texture()
-                gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_NEAREST)
                 image.width = const.SCREEN_WIDTH
                 image.height = const.SCREEN_HEIGHT
                 sprite = pyglet.sprite.Sprite(image)

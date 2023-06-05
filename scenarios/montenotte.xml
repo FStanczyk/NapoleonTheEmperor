@@ -1,0 +1,268 @@
+<scenario name="Montenotte">
+    <introText>
+        This is the tutorial!
+    </introText>
+    <objectives>
+        <objective type="occupy" row="12" col="18" for_turns="2"/>
+        <objective type="occupy" row="10" col="17" for_turns="2"/>
+    </objectives>
+    <startBalance>300</startBalance>
+    <shop>
+         <Unit id="0" experience="2" price="100"/>
+         <Unit id="2" experience="1" price="120"/>
+    </shop>
+    <hexes><!-- Here we will shape a map, terrains, road etc. -->
+        <Hex row="5" col="19" terrainType="0" initialFlag="graphics/flags/flag_italy.png" switchedFlag="graphics/flags/flag_france.png" name="Valegia" initialOwner="1" isRoad="True"/>
+        <Hex row="6" col="20" terrainType="0" initialFlag="graphics/flags/flag_italy.png" switchedFlag="graphics/flags/flag_france.png" name="Zinola" initialOwner="1" isRoad="True"/>
+        <Hex row="8" col="22" terrainType="0" initialFlag="graphics/flags/flag_italy.png" switchedFlag="graphics/flags/flag_france.png" name="Savona" initialOwner="1" isRoad="False"/>
+        <Hex row="7" col="23" terrainType="0" initialFlag="graphics/flags/flag_italy.png" switchedFlag="graphics/flags/flag_france.png" name="Savona" initialOwner="1" isRoad="False"/>
+        <Hex row="9" col="12" terrainType="0" initialFlag="graphics/flags/flag_italy.png" switchedFlag="graphics/flags/flag_france.png" name="Carcare" initialOwner="1" isRoad="True"/>
+        <Hex row="13" col="13" terrainType="0" initialFlag="graphics/flags/flag_italy.png" switchedFlag="graphics/flags/flag_france.png" name="Rochetta Cairo" initialOwner="1" isRoad="False"/>
+        <Hex row="10" col="17" terrainType="0" initialFlag="graphics/flags/flag_italy.png" switchedFlag="graphics/flags/flag_france.png" name="Montenotte Superiore" initialOwner="1" isRoad="False"/>
+        <Hex row="12" col="18" terrainType="0" initialFlag="graphics/flags/flag_italy.png" switchedFlag="graphics/flags/flag_france.png" name="Montenotte Inferiore" initialOwner="1" isRoad="False"/>
+        <Hex row="3" col="19" terrainType="0" initialFlag="graphics/flags/flag_italy.png" switchedFlag="graphics/flags/flag_france.png" name="Vado Ligure" initialOwner="1" isRoad="False"/>
+        <Hex row="11" col="12" terrainType="0" initialFlag="graphics/flags/flag_italy.png" switchedFlag="graphics/flags/flag_france.png" name="Cairo montenotte" initialOwner="1" isRoad="False"/>
+        <!--forests-->
+        <Hex row="12" col="3" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="12" col="2" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="11" col="3" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="11" col="2" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="14" col="4" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="13" col="5" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="12" col="5" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="12" col="6" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="10" col="7" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="10" col="8" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="10" col="9" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="10" col="11" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="11" col="10" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="11" col="9" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="12" col="10" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="12" col="9" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="13" col="9" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="11" col="4" terrainType="1" isRoad="False" initialFlag="0"/>
+<!--        south forest-->
+        <Hex row="8" col="3" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="8" col="4" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="7" col="3" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="6" col="3" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="7" col="4" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="6" col="4" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="8" col="5" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="7" col="5" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="6" col="5" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="5" col="5" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="8" col="6" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="7" col="6" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="6" col="6" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="7" col="7" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="6" col="7" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="8" col="8" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="7" col="9" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="8" col="10" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="7" col="10" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="7" col="11" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="6" col="11" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="6" col="12" terrainType="1" isRoad="False" initialFlag="0"/>
+        <!--middle top-->
+        <Hex row="13" col="11" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="13" col="12" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="13" col="14" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="12" col="14" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="11" col="14" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="13" col="15" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="12" col="15" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="11" col="15" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="13" col="16" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="12" col="16" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="11" col="16" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="13" col="17" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="12" col="17" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="11" col="17" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="14" col="20" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="12" col="19" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="11" col="19" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="12" col="20" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="11" col="20" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="10" col="19" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="14" col="24" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="14" col="25" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="14" col="23" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="14" col="22" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="13" col="23" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="13" col="22" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="14" col="27" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="14" col="28" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="13" col="27" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="13" col="28" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="12" col="27" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="12" col="26" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="11" col="25" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="10" col="26" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="10" col="27" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="6" col="15" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="5" col="15" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="4" col="15" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="6" col="16" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="5" col="16" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="4" col="16" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="5" col="17" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="4" col="17" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="3" col="17" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="5" col="14" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="4" col="14" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="3" col="14" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="4" col="12" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="4" col="13" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="3" col="13" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="5" col="15" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="4" col="15" terrainType="1" isRoad="False" initialFlag="0"/>
+        <Hex row="3" col="15" terrainType="1" isRoad="False" initialFlag="0"/>
+
+<!--        Mountains-->
+         <Hex row="8" col="1" terrainType="2" isRoad="False" initialFlag="0"/>
+         <Hex row="7" col="1" terrainType="2" isRoad="False" initialFlag="0"/>
+         <Hex row="6" col="1" terrainType="2" isRoad="False" initialFlag="0"/>
+         <Hex row="5" col="2" terrainType="2" isRoad="False" initialFlag="0"/>
+         <Hex row="4" col="2" terrainType="2" isRoad="False" initialFlag="0"/>
+         <Hex row="4" col="3" terrainType="2" isRoad="False" initialFlag="0"/>
+         <Hex row="3" col="1" terrainType="2" isRoad="False" initialFlag="0"/>
+         <Hex row="2" col="1" terrainType="2" isRoad="False" initialFlag="0"/>
+         <Hex row="1" col="1" terrainType="2" isRoad="False" initialFlag="0"/>
+         <Hex row="1" col="2" terrainType="2" isRoad="False" initialFlag="0"/>
+         <Hex row="3" col="2" terrainType="2" isRoad="False" initialFlag="0"/>
+         <Hex row="3" col="3" terrainType="2" isRoad="False" initialFlag="0"/>
+         <Hex row="2" col="3" terrainType="2" isRoad="False" initialFlag="0"/>
+         <Hex row="1" col="3" terrainType="2" isRoad="False" initialFlag="0"/>
+         <Hex row="0" col="3" terrainType="2" isRoad="False" initialFlag="0"/>
+         <Hex row="3" col="4" terrainType="2" isRoad="False" initialFlag="0"/>
+         <Hex row="2" col="4" terrainType="2" isRoad="False" initialFlag="0"/>
+         <Hex row="1" col="4" terrainType="2" isRoad="False" initialFlag="0"/>
+         <Hex row="1" col="5" terrainType="2" isRoad="False" initialFlag="0"/>
+         <Hex row="0" col="5" terrainType="2" isRoad="False" initialFlag="0"/>
+         <Hex row="1" col="6" terrainType="2" isRoad="False" initialFlag="0"/>
+         <Hex row="1" col="8" terrainType="2" isRoad="False" initialFlag="0"/>
+         <Hex row="0" col="9" terrainType="2" isRoad="False" initialFlag="0"/>
+         <Hex row="4" col="5" terrainType="2" isRoad="False" initialFlag="0"/>
+         <Hex row="5" col="6" terrainType="2" isRoad="False" initialFlag="0"/>
+         <Hex row="4" col="6" terrainType="2" isRoad="False" initialFlag="0"/>
+         <Hex row="5" col="7" terrainType="2" isRoad="False" initialFlag="0"/>
+         <Hex row="4" col="7" terrainType="2" isRoad="False" initialFlag="0"/>
+         <Hex row="3" col="7" terrainType="2" isRoad="False" initialFlag="0"/>
+         <Hex row="7" col="8" terrainType="2" isRoad="False" initialFlag="0"/>
+         <Hex row="6" col="8" terrainType="2" isRoad="False" initialFlag="0"/>
+         <Hex row="5" col="8" terrainType="2" isRoad="False" initialFlag="0"/>
+         <Hex row="4" col="8" terrainType="2" isRoad="False" initialFlag="0"/>
+         <Hex row="3" col="8" terrainType="2" isRoad="False" initialFlag="0"/>
+         <Hex row="6" col="9" terrainType="2" isRoad="False" initialFlag="0"/>
+         <Hex row="5" col="9" terrainType="2" isRoad="False" initialFlag="0"/>
+         <Hex row="4" col="9" terrainType="2" isRoad="False" initialFlag="0"/>
+         <Hex row="3" col="9" terrainType="2" isRoad="False" initialFlag="0"/>
+         <Hex row="2" col="9" terrainType="2" isRoad="False" initialFlag="0"/>
+         <Hex row="6" col="10" terrainType="2" isRoad="False" initialFlag="0"/>
+         <Hex row="5" col="10" terrainType="2" isRoad="False" initialFlag="0"/>
+         <Hex row="4" col="10" terrainType="2" isRoad="False" initialFlag="0"/>
+         <Hex row="3" col="10" terrainType="2" isRoad="False" initialFlag="0"/>
+         <Hex row="6" col="11" terrainType="2" isRoad="False" initialFlag="0"/>
+         <Hex row="5" col="11" terrainType="2" isRoad="False" initialFlag="0"/>
+         <Hex row="2" col="11" terrainType="2" isRoad="False" initialFlag="0"/>
+         <Hex row="1" col="11" terrainType="2" isRoad="False" initialFlag="0"/>
+         <Hex row="2" col="12" terrainType="2" isRoad="False" initialFlag="0"/>
+         <Hex row="1" col="12" terrainType="2" isRoad="False" initialFlag="0"/>
+<!--        roads left-->
+         <Hex row="10" col="1" terrainType="1" isRoad="True" initialFlag="0"/>
+         <Hex row="9" col="1" terrainType="2" isRoad="True" initialFlag="0"/>
+         <Hex row="9" col="2" terrainType="2" isRoad="True" initialFlag="0"/>
+         <Hex row="8" col="2" terrainType="2" isRoad="True" initialFlag="0"/>
+         <Hex row="7" col="2" terrainType="2" isRoad="True" initialFlag="0"/>
+         <Hex row="6" col="2" terrainType="2" isRoad="True" initialFlag="0"/>
+         <Hex row="5" col="1" terrainType="2" isRoad="True" initialFlag="0"/>
+         <Hex row="4" col="1" terrainType="2" isRoad="True" initialFlag="0"/>
+         <Hex row="5" col="3" terrainType="1" isRoad="True" initialFlag="0"/>
+         <Hex row="5" col="4" terrainType="1" isRoad="True" initialFlag="0"/>
+         <Hex row="4" col="4" terrainType="2" isRoad="True" initialFlag="0"/>
+         <Hex row="3" col="5" terrainType="2" isRoad="True" initialFlag="0"/>
+         <Hex row="2" col="5" terrainType="2" isRoad="True" initialFlag="0"/>
+         <Hex row="3" col="6" terrainType="2" isRoad="True" initialFlag="0"/>
+         <Hex row="2" col="6" terrainType="2" isRoad="True" initialFlag="0"/>
+         <Hex row="1" col="7" terrainType="2" isRoad="True" initialFlag="0"/>
+         <Hex row="2" col="7" terrainType="2" isRoad="True" initialFlag="0"/>
+         <Hex row="2" col="8" terrainType="2" isRoad="True" initialFlag="0"/>
+         <Hex row="1" col="9" terrainType="2" isRoad="True" initialFlag="0"/>
+         <Hex row="1" col="10" terrainType="2" isRoad="True" initialFlag="0"/>
+         <Hex row="10" col="2" terrainType="0" isRoad="True" initialFlag="0"/>
+         <Hex row="9" col="3" terrainType="0" isRoad="True" initialFlag="0"/>
+         <Hex row="10" col="4" terrainType="0" isRoad="True" initialFlag="0"/>
+         <Hex row="9" col="4" terrainType="0" isRoad="True" initialFlag="0"/>
+         <Hex row="9" col="5" terrainType="0" isRoad="True" initialFlag="0"/>
+         <Hex row="9" col="6" terrainType="0" isRoad="True" initialFlag="0"/>
+         <Hex row="8" col="7" terrainType="0" isRoad="True" initialFlag="0"/>
+         <Hex row="9" col="8" terrainType="0" isRoad="True" initialFlag="0"/>
+         <Hex row="9" col="9" terrainType="0" isRoad="True" initialFlag="0"/>
+         <Hex row="8" col="9" terrainType="0" isRoad="True" initialFlag="0"/>
+         <Hex row="9" col="10" terrainType="0" isRoad="True" initialFlag="0"/>
+         <Hex row="9" col="11" terrainType="0" isRoad="True" initialFlag="0"/>
+         <Hex row="8" col="11" terrainType="0" isRoad="True" initialFlag="0"/>
+         <Hex row="9" col="12" terrainType="0" isRoad="True" initialFlag="0"/>
+         <Hex row="8" col="13" terrainType="0" isRoad="True" initialFlag="0"/>
+         <Hex row="8" col="14" terrainType="0" isRoad="True" initialFlag="0"/>
+         <Hex row="7" col="15" terrainType="0" isRoad="True" initialFlag="0"/>
+         <Hex row="7" col="16" terrainType="0" isRoad="True" initialFlag="0"/>
+         <Hex row="6" col="17" terrainType="0" isRoad="True" initialFlag="0"/>
+         <Hex row="6" col="18" terrainType="0" isRoad="True" initialFlag="0"/>
+         <Hex row="5" col="19" terrainType="0" isRoad="True" initialFlag="0"/>
+         <Hex row="8" col="16" terrainType="0" isRoad="True" initialFlag="0"/>
+         <Hex row="7" col="17" terrainType="0" isRoad="True" initialFlag="0"/>
+         <Hex row="7" col="18" terrainType="0" isRoad="True" initialFlag="0"/>
+         <Hex row="7" col="19" terrainType="0" isRoad="True" initialFlag="0"/>
+         <Hex row="7" col="20" terrainType="0" isRoad="True" initialFlag="0"/>
+         <Hex row="6" col="21" terrainType="0" isRoad="True" initialFlag="0"/>
+         <Hex row="4" col="19" terrainType="0" isRoad="True" initialFlag="0"/>
+         <Hex row="4" col="18" terrainType="0" isRoad="True" initialFlag="0"/>
+         <Hex row="3" col="18" terrainType="0" isRoad="True" initialFlag="0"/>
+         <Hex row="2" col="17" terrainType="0" isRoad="True" initialFlag="0"/>
+         <Hex row="2" col="18" terrainType="0" isRoad="True" initialFlag="0"/>
+         <Hex row="1" col="17" terrainType="0" isRoad="True" initialFlag="0"/>
+         <Hex row="2" col="16" terrainType="0" isRoad="True" initialFlag="0"/>
+         <Hex row="2" col="15" terrainType="0" isRoad="True" initialFlag="0"/>
+         <Hex row="1" col="15" terrainType="0" isRoad="True" initialFlag="0"/>
+         <Hex row="1" col="14" terrainType="0" isRoad="True" initialFlag="0"/>
+         <Hex row="7" col="22" terrainType="0" isRoad="True" initialFlag="0"/>
+         <Hex row="7" col="23" terrainType="0" isRoad="True" initialFlag="0"/>
+         <Hex row="8" col="24" terrainType="0" isRoad="True" initialFlag="0"/>
+         <Hex row="8" col="23" terrainType="0" isRoad="True" initialFlag="0"/>
+         <Hex row="9" col="24" terrainType="0" isRoad="True" initialFlag="0"/>
+         <Hex row="9" col="23" terrainType="0" isRoad="True" initialFlag="0"/>
+         <Hex row="10" col="23" terrainType="0" isRoad="True" initialFlag="0"/>
+         <Hex row="10" col="24" terrainType="0" isRoad="True" initialFlag="0"/>
+         <Hex row="11" col="22" terrainType="0" isRoad="True" initialFlag="0"/>
+         <Hex row="12" col="22" terrainType="0" isRoad="True" initialFlag="0"/>
+         <Hex row="11" col="21" terrainType="0" isRoad="True" initialFlag="0"/>
+         <Hex row="12" col="21" terrainType="0" isRoad="True" initialFlag="0"/>
+         <Hex row="13" col="21" terrainType="0" isRoad="True" initialFlag="0"/>
+         <Hex row="14" col="21" terrainType="0" isRoad="True" initialFlag="0"/>
+         <Hex row="13" col="20" terrainType="0" isRoad="True" initialFlag="0"/>
+         <Hex row="13" col="19" terrainType="0" isRoad="True" initialFlag="0"/>
+         <Hex row="14" col="19" terrainType="0" isRoad="True" initialFlag="0"/>
+         <Hex row="11" col="24" terrainType="0" isRoad="True" initialFlag="0"/>
+         <Hex row="11" col="23" terrainType="0" isRoad="True" initialFlag="0"/>
+         <Hex row="12" col="23" terrainType="0" isRoad="True" initialFlag="0"/>
+         <Hex row="13" col="24" terrainType="0" isRoad="True" initialFlag="0"/>
+         <Hex row="12" col="25" terrainType="0" isRoad="True" initialFlag="0"/>
+         <Hex row="13" col="26" terrainType="0" isRoad="True" initialFlag="0"/>
+         <Hex row="14" col="26" terrainType="0" isRoad="True" initialFlag="0"/>
+         <Hex row="8" col="25" terrainType="0" isRoad="True" initialFlag="0"/>
+         <Hex row="9" col="25" terrainType="0" isRoad="True" initialFlag="0"/>
+         <Hex row="10" col="25" terrainType="0" isRoad="True" initialFlag="0"/>
+         <Hex row="11" col="26" terrainType="0" isRoad="True" initialFlag="0"/>
+         <Hex row="11" col="27" terrainType="0" isRoad="True" initialFlag="0"/>
+         <Hex row="11" col="28" terrainType="0" isRoad="True" initialFlag="0"/>
+    </hexes>
+    <units> <!-- Here we will define all starting units and their positions -->
+        <Unit id="0" player="0" row="8" col="5" experience="7"/>
+        <Unit id="4" player="0" row="13" col="8" experience="8"/>
+        <Unit id="5" player="0" row="13" col="12" experience="8"/>
+        <Unit id="1" player="1" row="9" col="7" experience="3"/>
+        <Unit id="3" player="1" row="11" col="5" experience="9"/>
+    </units>
+</scenario>

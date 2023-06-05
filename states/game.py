@@ -128,7 +128,7 @@ class Game:
                                     )
         self.hex_name = text.Label('',
                                    font_name=FONT,
-                                   font_size=18,
+                                   font_size=14,
                                    x=hex_name_x, y=info_top_y - 14,
                                    color=YELLOW
                                    )
@@ -208,7 +208,8 @@ class Game:
                 self.selected_terrain_text.text = self.level.map.selectedHex.terrainType.upper()
                 self.selected_roughness.text = f"Roughness: {self.level.map.selectedHex.terrainRoughness}"
                 self.selected_cords_text.text = f"{self.level.map.selectedHex.row}, {self.level.map.selectedHex.col}"
-                self.hex_name.text = self.level.map.selectedHex.name
+                self.hex_name.text = ""
+                if self.level.map.selectedHex.name is not None: self.hex_name.text = self.level.map.selectedHex.name
                 if self.level.map.selectedHex.unit is not None:
                     self.selectUnit()
                     experience = self.level.map.selectedHex.unit.experience
@@ -298,7 +299,7 @@ class Game:
             row = objective["row"]
             col = objective["col"]
             hex = self.level.map.hexMap[f"{row},{col}"]
-            if hex.unit is None or hex.unit.owner == 1: return False
+            if hex.flag.owner != 0: return False
         return True
 
     def calculateExpSprites(self, experience):
